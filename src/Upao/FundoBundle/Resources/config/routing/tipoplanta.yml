@@ -1,0 +1,30 @@
+tipoplanta:
+    pattern:  /
+    defaults: { _controller: "UpaoFundoBundle:TipoPlanta:index" }
+
+tipoplanta_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "UpaoFundoBundle:TipoPlanta:show" }
+
+tipoplanta_new:
+    pattern:  /new
+    defaults: { _controller: "UpaoFundoBundle:TipoPlanta:new" }
+
+tipoplanta_create:
+    pattern:  /create
+    defaults: { _controller: "UpaoFundoBundle:TipoPlanta:create" }
+    requirements: { _method: post }
+
+tipoplanta_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "UpaoFundoBundle:TipoPlanta:edit" }
+
+tipoplanta_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "UpaoFundoBundle:TipoPlanta:update" }
+    requirements: { _method: post|put }
+
+tipoplanta_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "UpaoFundoBundle:TipoPlanta:delete" }
+    requirements: { _method: post|delete }

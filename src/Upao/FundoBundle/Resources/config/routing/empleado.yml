@@ -1,0 +1,30 @@
+empleado:
+    pattern:  /
+    defaults: { _controller: "UpaoFundoBundle:Empleado:index" }
+
+empleado_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "UpaoFundoBundle:Empleado:show" }
+
+empleado_new:
+    pattern:  /new
+    defaults: { _controller: "UpaoFundoBundle:Empleado:new" }
+
+empleado_create:
+    pattern:  /create
+    defaults: { _controller: "UpaoFundoBundle:Empleado:create" }
+    requirements: { _method: post }
+
+empleado_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "UpaoFundoBundle:Empleado:edit" }
+
+empleado_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "UpaoFundoBundle:Empleado:update" }
+    requirements: { _method: post|put }
+
+empleado_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "UpaoFundoBundle:Empleado:delete" }
+    requirements: { _method: post|delete }

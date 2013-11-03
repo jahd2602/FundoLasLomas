@@ -1,0 +1,64 @@
+upao_fundo_homepage:
+    pattern:  /hello/{name}
+    defaults: { _controller: UpaoFundoBundle:Default:index }
+
+UpaoFundoBundle_abono:
+    resource: "@UpaoFundoBundle/Resources/config/routing/abono.yml"
+    prefix:   /abono
+
+UpaoFundoBundle_abonoplanta:
+    resource: "@UpaoFundoBundle/Resources/config/routing/abonoplanta.yml"
+    prefix:   /abonoplanta
+
+UpaoFundoBundle_cliente:
+    resource: "@UpaoFundoBundle/Resources/config/routing/cliente.yml"
+    prefix:   /cliente
+
+UpaoFundoBundle_cosecha:
+    resource: "@UpaoFundoBundle/Resources/config/routing/cosecha.yml"
+    prefix:   /cosecha
+
+UpaoFundoBundle_cosechaplanta:
+    resource: "@UpaoFundoBundle/Resources/config/routing/cosechaplanta.yml"
+    prefix:   /cosechaplanta
+
+UpaoFundoBundle_empleado:
+    resource: "@UpaoFundoBundle/Resources/config/routing/empleado.yml"
+    prefix:   /empleado
+
+UpaoFundoBundle_estadoambiente:
+    resource: "@UpaoFundoBundle/Resources/config/routing/estadoambiente.yml"
+    prefix:   /estadoambiente
+
+UpaoFundoBundle_fumigacion:
+    resource: "@UpaoFundoBundle/Resources/config/routing/fumigacion.yml"
+    prefix:   /fumigacion
+
+UpaoFundoBundle_fumigacionplanta:
+    resource: "@UpaoFundoBundle/Resources/config/routing/fumigacionplanta.yml"
+    prefix:   /fumigacionplanta
+
+UpaoFundoBundle_pedido:
+    resource: "@UpaoFundoBundle/Resources/config/routing/pedido.yml"
+    prefix:   /pedido
+
+UpaoFundoBundle_planta:
+    resource: "@UpaoFundoBundle/Resources/config/routing/planta.yml"
+    prefix:   /planta
+
+UpaoFundoBundle_problema:
+    resource: "@UpaoFundoBundle/Resources/config/routing/problema.yml"
+    prefix:   /problema
+
+UpaoFundoBundle_proveedor:
+    resource: "@UpaoFundoBundle/Resources/config/routing/proveedor.yml"
+    prefix:   /proveedor
+
+UpaoFundoBundle_tipoplanta:
+    resource: "@UpaoFundoBundle/Resources/config/routing/tipoplanta.yml"
+    prefix:   /tipoplanta
+
+UpaoFundoBundle_venta:
+    resource: "@UpaoFundoBundle/Resources/config/routing/venta.yml"
+    prefix:   /venta
+

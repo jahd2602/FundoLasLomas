@@ -1,0 +1,30 @@
+venta:
+    pattern:  /
+    defaults: { _controller: "UpaoFundoBundle:Venta:index" }
+
+venta_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "UpaoFundoBundle:Venta:show" }
+
+venta_new:
+    pattern:  /new
+    defaults: { _controller: "UpaoFundoBundle:Venta:new" }
+
+venta_create:
+    pattern:  /create
+    defaults: { _controller: "UpaoFundoBundle:Venta:create" }
+    requirements: { _method: post }
+
+venta_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "UpaoFundoBundle:Venta:edit" }
+
+venta_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "UpaoFundoBundle:Venta:update" }
+    requirements: { _method: post|put }
+
+venta_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "UpaoFundoBundle:Venta:delete" }
+    requirements: { _method: post|delete }

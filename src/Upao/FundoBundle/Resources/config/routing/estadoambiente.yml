@@ -1,0 +1,30 @@
+estadoambiente:
+    pattern:  /
+    defaults: { _controller: "UpaoFundoBundle:EstadoAmbiente:index" }
+
+estadoambiente_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "UpaoFundoBundle:EstadoAmbiente:show" }
+
+estadoambiente_new:
+    pattern:  /new
+    defaults: { _controller: "UpaoFundoBundle:EstadoAmbiente:new" }
+
+estadoambiente_create:
+    pattern:  /create
+    defaults: { _controller: "UpaoFundoBundle:EstadoAmbiente:create" }
+    requirements: { _method: post }
+
+estadoambiente_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "UpaoFundoBundle:EstadoAmbiente:edit" }
+
+estadoambiente_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "UpaoFundoBundle:EstadoAmbiente:update" }
+    requirements: { _method: post|put }
+
+estadoambiente_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "UpaoFundoBundle:EstadoAmbiente:delete" }
+    requirements: { _method: post|delete }

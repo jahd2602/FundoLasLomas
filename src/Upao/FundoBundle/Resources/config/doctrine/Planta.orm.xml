@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Upao\FundoBundle\Entity\Planta" table="planta">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="columna" type="integer" column="columna" nullable="true"/>
+    <field name="fila" type="integer" column="fila" nullable="true"/>
+    <field name="estado" type="string" column="estado" nullable="true"/>
+    <many-to-one field="idPedido" target-entity="Pedido">
+      <join-columns>
+        <join-column name="id_pedido" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="idTipoPlanta" target-entity="TipoPlanta">
+      <join-columns>
+        <join-column name="id_tipo_planta" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

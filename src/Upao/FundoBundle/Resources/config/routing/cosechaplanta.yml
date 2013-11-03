@@ -1,0 +1,30 @@
+cosechaplanta:
+    pattern:  /
+    defaults: { _controller: "UpaoFundoBundle:CosechaPlanta:index" }
+
+cosechaplanta_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "UpaoFundoBundle:CosechaPlanta:show" }
+
+cosechaplanta_new:
+    pattern:  /new
+    defaults: { _controller: "UpaoFundoBundle:CosechaPlanta:new" }
+
+cosechaplanta_create:
+    pattern:  /create
+    defaults: { _controller: "UpaoFundoBundle:CosechaPlanta:create" }
+    requirements: { _method: post }
+
+cosechaplanta_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "UpaoFundoBundle:CosechaPlanta:edit" }
+
+cosechaplanta_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "UpaoFundoBundle:CosechaPlanta:update" }
+    requirements: { _method: post|put }
+
+cosechaplanta_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "UpaoFundoBundle:CosechaPlanta:delete" }
+    requirements: { _method: post|delete }

@@ -1,0 +1,30 @@
+fumigacion:
+    pattern:  /
+    defaults: { _controller: "UpaoFundoBundle:Fumigacion:index" }
+
+fumigacion_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "UpaoFundoBundle:Fumigacion:show" }
+
+fumigacion_new:
+    pattern:  /new
+    defaults: { _controller: "UpaoFundoBundle:Fumigacion:new" }
+
+fumigacion_create:
+    pattern:  /create
+    defaults: { _controller: "UpaoFundoBundle:Fumigacion:create" }
+    requirements: { _method: post }
+
+fumigacion_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "UpaoFundoBundle:Fumigacion:edit" }
+
+fumigacion_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "UpaoFundoBundle:Fumigacion:update" }
+    requirements: { _method: post|put }
+
+fumigacion_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "UpaoFundoBundle:Fumigacion:delete" }
+    requirements: { _method: post|delete }

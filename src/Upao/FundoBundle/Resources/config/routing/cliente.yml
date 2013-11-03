@@ -1,0 +1,30 @@
+cliente:
+    pattern:  /
+    defaults: { _controller: "UpaoFundoBundle:Cliente:index" }
+
+cliente_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "UpaoFundoBundle:Cliente:show" }
+
+cliente_new:
+    pattern:  /new
+    defaults: { _controller: "UpaoFundoBundle:Cliente:new" }
+
+cliente_create:
+    pattern:  /create
+    defaults: { _controller: "UpaoFundoBundle:Cliente:create" }
+    requirements: { _method: post }
+
+cliente_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "UpaoFundoBundle:Cliente:edit" }
+
+cliente_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "UpaoFundoBundle:Cliente:update" }
+    requirements: { _method: post|put }
+
+cliente_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "UpaoFundoBundle:Cliente:delete" }
+    requirements: { _method: post|delete }

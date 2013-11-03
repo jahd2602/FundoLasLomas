@@ -1,0 +1,4 @@
+upao_fundo:
+    resource: "@UpaoFundoBundle/Resources/config/routing.yml"
+    prefix:   /
+

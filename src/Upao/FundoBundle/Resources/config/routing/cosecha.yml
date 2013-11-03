@@ -1,0 +1,30 @@
+cosecha:
+    pattern:  /
+    defaults: { _controller: "UpaoFundoBundle:Cosecha:index" }
+
+cosecha_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "UpaoFundoBundle:Cosecha:show" }
+
+cosecha_new:
+    pattern:  /new
+    defaults: { _controller: "UpaoFundoBundle:Cosecha:new" }
+
+cosecha_create:
+    pattern:  /create
+    defaults: { _controller: "UpaoFundoBundle:Cosecha:create" }
+    requirements: { _method: post }
+
+cosecha_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "UpaoFundoBundle:Cosecha:edit" }
+
+cosecha_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "UpaoFundoBundle:Cosecha:update" }
+    requirements: { _method: post|put }
+
+cosecha_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "UpaoFundoBundle:Cosecha:delete" }
+    requirements: { _method: post|delete }

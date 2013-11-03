@@ -1,0 +1,48 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>EstadoAmbiente</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Fecha</th>
+                <td>{{ entity.fecha|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Temperatura</th>
+                <td>{{ entity.temperatura }}</td>
+            </tr>
+            <tr>
+                <th>Humedad</th>
+                <td>{{ entity.humedad }}</td>
+            </tr>
+            <tr>
+                <th>Presionambiental</th>
+                <td>{{ entity.presionAmbiental }}</td>
+            </tr>
+            <tr>
+                <th>Observaciones</th>
+                <td>{{ entity.observaciones }}</td>
+            </tr>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('estadoambiente') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('estadoambiente_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}

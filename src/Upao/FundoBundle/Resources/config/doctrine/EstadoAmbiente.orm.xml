@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Upao\FundoBundle\Entity\EstadoAmbiente" table="estado_ambiente">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="fecha" type="date" column="fecha" nullable="false"/>
+    <field name="temperatura" type="float" column="temperatura" nullable="false"/>
+    <field name="humedad" type="float" column="humedad" nullable="false"/>
+    <field name="presionAmbiental" type="float" column="presion_ambiental" nullable="false"/>
+    <field name="observaciones" type="text" column="observaciones" nullable="true"/>
+  </entity>
+</doctrine-mapping>

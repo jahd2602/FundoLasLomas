@@ -1,0 +1,30 @@
+proveedor:
+    pattern:  /
+    defaults: { _controller: "UpaoFundoBundle:Proveedor:index" }
+
+proveedor_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "UpaoFundoBundle:Proveedor:show" }
+
+proveedor_new:
+    pattern:  /new
+    defaults: { _controller: "UpaoFundoBundle:Proveedor:new" }
+
+proveedor_create:
+    pattern:  /create
+    defaults: { _controller: "UpaoFundoBundle:Proveedor:create" }
+    requirements: { _method: post }
+
+proveedor_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "UpaoFundoBundle:Proveedor:edit" }
+
+proveedor_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "UpaoFundoBundle:Proveedor:update" }
+    requirements: { _method: post|put }
+
+proveedor_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "UpaoFundoBundle:Proveedor:delete" }
+    requirements: { _method: post|delete }

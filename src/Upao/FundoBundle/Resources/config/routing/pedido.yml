@@ -1,0 +1,30 @@
+pedido:
+    pattern:  /
+    defaults: { _controller: "UpaoFundoBundle:Pedido:index" }
+
+pedido_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "UpaoFundoBundle:Pedido:show" }
+
+pedido_new:
+    pattern:  /new
+    defaults: { _controller: "UpaoFundoBundle:Pedido:new" }
+
+pedido_create:
+    pattern:  /create
+    defaults: { _controller: "UpaoFundoBundle:Pedido:create" }
+    requirements: { _method: post }
+
+pedido_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "UpaoFundoBundle:Pedido:edit" }
+
+pedido_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "UpaoFundoBundle:Pedido:update" }
+    requirements: { _method: post|put }
+
+pedido_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "UpaoFundoBundle:Pedido:delete" }
+    requirements: { _method: post|delete }

@@ -1,0 +1,30 @@
+problema:
+    pattern:  /
+    defaults: { _controller: "UpaoFundoBundle:Problema:index" }
+
+problema_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "UpaoFundoBundle:Problema:show" }
+
+problema_new:
+    pattern:  /new
+    defaults: { _controller: "UpaoFundoBundle:Problema:new" }
+
+problema_create:
+    pattern:  /create
+    defaults: { _controller: "UpaoFundoBundle:Problema:create" }
+    requirements: { _method: post }
+
+problema_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "UpaoFundoBundle:Problema:edit" }
+
+problema_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "UpaoFundoBundle:Problema:update" }
+    requirements: { _method: post|put }
+
+problema_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "UpaoFundoBundle:Problema:delete" }
+    requirements: { _method: post|delete }

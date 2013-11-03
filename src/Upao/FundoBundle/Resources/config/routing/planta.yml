@@ -1,0 +1,30 @@
+planta:
+    pattern:  /
+    defaults: { _controller: "UpaoFundoBundle:Planta:index" }
+
+planta_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "UpaoFundoBundle:Planta:show" }
+
+planta_new:
+    pattern:  /new
+    defaults: { _controller: "UpaoFundoBundle:Planta:new" }
+
+planta_create:
+    pattern:  /create
+    defaults: { _controller: "UpaoFundoBundle:Planta:create" }
+    requirements: { _method: post }
+
+planta_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "UpaoFundoBundle:Planta:edit" }
+
+planta_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "UpaoFundoBundle:Planta:update" }
+    requirements: { _method: post|put }
+
+planta_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "UpaoFundoBundle:Planta:delete" }
+    requirements: { _method: post|delete }

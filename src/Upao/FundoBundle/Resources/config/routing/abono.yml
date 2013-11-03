@@ -1,0 +1,30 @@
+abono:
+    pattern:  /
+    defaults: { _controller: "UpaoFundoBundle:Abono:index" }
+
+abono_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "UpaoFundoBundle:Abono:show" }
+
+abono_new:
+    pattern:  /new
+    defaults: { _controller: "UpaoFundoBundle:Abono:new" }
+
+abono_create:
+    pattern:  /create
+    defaults: { _controller: "UpaoFundoBundle:Abono:create" }
+    requirements: { _method: post }
+
+abono_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "UpaoFundoBundle:Abono:edit" }
+
+abono_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "UpaoFundoBundle:Abono:update" }
+    requirements: { _method: post|put }
+
+abono_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "UpaoFundoBundle:Abono:delete" }
+    requirements: { _method: post|delete }

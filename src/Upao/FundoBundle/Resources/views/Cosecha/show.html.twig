@@ -1,0 +1,44 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Cosecha</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Totalkilos</th>
+                <td>{{ entity.totalKilos }}</td>
+            </tr>
+            <tr>
+                <th>Kilosdisponibles</th>
+                <td>{{ entity.kilosDisponibles }}</td>
+            </tr>
+            <tr>
+                <th>Fecha</th>
+                <td>{{ entity.fecha|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Observaciones</th>
+                <td>{{ entity.observaciones }}</td>
+            </tr>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('cosecha') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('cosecha_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}
