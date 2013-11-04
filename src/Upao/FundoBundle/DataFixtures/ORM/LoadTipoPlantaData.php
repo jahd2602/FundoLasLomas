@@ -6,14 +6,17 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
-use Upao\FundoBundle\Entity;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Upao\FundoBundle\Entity\TipoPlanta;
 
 
 class LoadTipoPlantaData extends AbstractFixture implements OrderedFixtureInterface, FixtureInterface, ContainerAwareInterface
 {
-
+    /**
+     * @var Container
+     */
     private $container;
 
     public function setContainer(ContainerInterface $container = null)
@@ -27,14 +30,14 @@ class LoadTipoPlantaData extends AbstractFixture implements OrderedFixtureInterf
     public function load(ObjectManager $manager)
     {
 
-        $palta = new Entity\TipoPlanta();
-        $palta->setNombre("Palta Haz");
-        $palta->setDescripcion("palta");
+        $palta = new TipoPlanta();
+        $palta->setNombre('Palta Haz');
+        $palta->setDescripcion('palta');
         $manager->persist($palta);
 
-        $manzanas = new Entity\TipoPlanta();
-        $manzanas->setNombre("Manzanas");
-        $manzanas->setDescripcion("Manzanas");
+        $manzanas = new TipoPlanta();
+        $manzanas->setNombre('Manzanas');
+        $manzanas->setDescripcion('Manzanas');
         $manager->persist($manzanas);
 
 

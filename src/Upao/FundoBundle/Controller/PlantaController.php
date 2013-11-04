@@ -5,6 +5,9 @@ namespace Upao\FundoBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Constraints\Date;
+use Upao\FundoBundle\Entity\Pedido;
 use Upao\FundoBundle\Entity\Planta;
 use Upao\FundoBundle\Form\PlantaType;
 
@@ -14,6 +17,105 @@ use Upao\FundoBundle\Form\PlantaType;
  */
 class PlantaController extends Controller
 {
+
+
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function sembrarAction(Request $request)
+    {
+
+        $em = $this->getDoctrine()->getManager();
+        $session = $request->getSession();
+
+        if ($request->getMethod() === 'POST') {
+            $data = array();
+
+            $idProveedor = $request->get('idProveedor');
+            $idTipoPlanta = $request->get('idTipoPlanta');
+            $rango = $request->get('rango');
+            $costo = (float)$request->get('costo');
+
+            $proveedor = $em->getRepository('UpaoFundoBundle:Proveedor')->find($idProveedor);
+            $tipoPlanta = $em->getRepository('UpaoFundoBundle:TipoPlanta')->find($idTipoPlanta);
+
+            if (!$proveedor || !$tipoPlanta) {
+                return new Response('Datos Incompletos', 404);
+            }
+
+            $valores = explode(',', $rango);
+            $celdas = array();
+            foreach ($valores as $valor) {
+                $celda = explode('|', $valor);
+                $celdas[] = array(
+                    'columna' => isset($celda[0]) ? $celda[0] : 0,
+                    'fila' => isset($celda[1]) ? $celda[1] : 0,
+                );
+            }
+
+            $em->getConnection()->beginTransaction();
+
+            try {
+
+                $pedido = new Pedido();
+                $pedido->setCosto($costo);
+                $pedido->setFecha(new Date());
+                $pedido->setIdProveedor($proveedor);
+
+                $em->persist($pedido);
+
+                foreach ($celdas as $celda) {
+
+                    $planta = new Planta();
+                    $planta->setColumna($celda['columna']);
+                    $planta->setFila($celda['fila']);
+                    $planta->setIdPedido($pedido);
+                    $planta->setIdTipoPlanta($tipoPlanta);
+                    $planta->setEstado('SEMBRADA');
+
+                    $em->persist($planta);
+
+                }
+
+                $em->flush();
+                $em->getConnection()->commit();
+
+            } catch (Exception $e) {
+
+                $em->getConnection()->rollback();
+                throw $e;
+            }
+
+            $data = array(
+                'success' => true,
+
+            );
+
+
+            if ($request->isXmlHttpRequest()) {
+
+                return new Response(json_encode($data), 200, array(
+                    'Content-Type' => 'application/json'
+                ));
+
+            } else {
+                $session->getFlashBag()->add('ok', 'se se registró el sembrio correctamente.');
+                return $this->redirect($this->generateUrl('inicio'));
+            }
+
+        } else {
+
+            $proveedores = $em->getRepository('UpaoFundoBundle:Proveedor')->findAll();
+            $tiposPlanta = $em->getRepository('UpaoFundoBundle:TipoPlanta')->findAll();
+
+            return $this->render('UpaoFundoBundle:Planta:sembrar.html.twig', array(
+                'proveedores' => $proveedores,
+                'tiposPlanta' => $tiposPlanta,
+            ));
+        }
+
+    }
 
     /**
      * Lists all Planta entities.
@@ -29,6 +131,7 @@ class PlantaController extends Controller
             'entities' => $entities,
         ));
     }
+
     /**
      * Creates a new Planta entity.
      *
@@ -49,17 +152,17 @@ class PlantaController extends Controller
 
         return $this->render('UpaoFundoBundle:Planta:new.html.twig', array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
     /**
-    * Creates a form to create a Planta entity.
-    *
-    * @param Planta $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to create a Planta entity.
+     *
+     * @param Planta $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createCreateForm(Planta $entity)
     {
         $form = $this->createForm(new PlantaType(), $entity, array(
@@ -79,11 +182,11 @@ class PlantaController extends Controller
     public function newAction()
     {
         $entity = new Planta();
-        $form   = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($entity);
 
         return $this->render('UpaoFundoBundle:Planta:new.html.twig', array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
@@ -104,8 +207,8 @@ class PlantaController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render('UpaoFundoBundle:Planta:show.html.twig', array(
-            'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),        ));
+            'entity' => $entity,
+            'delete_form' => $deleteForm->createView(),));
     }
 
     /**
@@ -126,19 +229,19 @@ class PlantaController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render('UpaoFundoBundle:Planta:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
 
     /**
-    * Creates a form to edit a Planta entity.
-    *
-    * @param Planta $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to edit a Planta entity.
+     *
+     * @param Planta $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createEditForm(Planta $entity)
     {
         $form = $this->createForm(new PlantaType(), $entity, array(
@@ -150,6 +253,7 @@ class PlantaController extends Controller
 
         return $form;
     }
+
     /**
      * Edits an existing Planta entity.
      *
@@ -175,11 +279,12 @@ class PlantaController extends Controller
         }
 
         return $this->render('UpaoFundoBundle:Planta:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
+
     /**
      * Deletes a Planta entity.
      *
@@ -217,7 +322,6 @@ class PlantaController extends Controller
             ->setAction($this->generateUrl('planta_delete', array('id' => $id)))
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
-        ;
+            ->getForm();
     }
 }

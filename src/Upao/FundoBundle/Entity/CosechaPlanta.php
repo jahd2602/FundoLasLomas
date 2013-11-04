@@ -22,16 +22,6 @@ class CosechaPlanta
     private $id;
 
     /**
-     * @var \Upao\FundoBundle\Entity\Cosecha
-     *
-     * @ORM\ManyToOne(targetEntity="Upao\FundoBundle\Entity\Cosecha")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_cosecha", referencedColumnName="id")
-     * })
-     */
-    private $idCosecha;
-
-    /**
      * @var \Upao\FundoBundle\Entity\Planta
      *
      * @ORM\ManyToOne(targetEntity="Upao\FundoBundle\Entity\Planta")
@@ -40,6 +30,16 @@ class CosechaPlanta
      * })
      */
     private $idPlanta;
+
+    /**
+     * @var \Upao\FundoBundle\Entity\Cosecha
+     *
+     * @ORM\ManyToOne(targetEntity="Upao\FundoBundle\Entity\Cosecha")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_cosecha", referencedColumnName="id")
+     * })
+     */
+    private $idCosecha;
 
 
 
@@ -51,29 +51,6 @@ class CosechaPlanta
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set idCosecha
-     *
-     * @param \Upao\FundoBundle\Entity\Cosecha $idCosecha
-     * @return CosechaPlanta
-     */
-    public function setIdCosecha(\Upao\FundoBundle\Entity\Cosecha $idCosecha = null)
-    {
-        $this->idCosecha = $idCosecha;
-    
-        return $this;
-    }
-
-    /**
-     * Get idCosecha
-     *
-     * @return \Upao\FundoBundle\Entity\Cosecha 
-     */
-    public function getIdCosecha()
-    {
-        return $this->idCosecha;
     }
 
     /**
@@ -97,5 +74,28 @@ class CosechaPlanta
     public function getIdPlanta()
     {
         return $this->idPlanta;
+    }
+
+    /**
+     * Set idCosecha
+     *
+     * @param \Upao\FundoBundle\Entity\Cosecha $idCosecha
+     * @return CosechaPlanta
+     */
+    public function setIdCosecha(\Upao\FundoBundle\Entity\Cosecha $idCosecha = null)
+    {
+        $this->idCosecha = $idCosecha;
+    
+        return $this;
+    }
+
+    /**
+     * Get idCosecha
+     *
+     * @return \Upao\FundoBundle\Entity\Cosecha 
+     */
+    public function getIdCosecha()
+    {
+        return $this->idCosecha;
     }
 }

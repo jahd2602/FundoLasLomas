@@ -7,14 +7,14 @@
     <field name="kilosVendidos" type="float" column="kilos_vendidos" nullable="true"/>
     <field name="observaciones" type="text" column="observaciones" nullable="true"/>
     <field name="costo" type="float" column="costo" nullable="false"/>
-    <many-to-one field="idCliente" target-entity="Cliente">
-      <join-columns>
-        <join-column name="id_cliente" referenced-column-name="id"/>
-      </join-columns>
-    </many-to-one>
     <many-to-one field="idCosecha" target-entity="Cosecha">
       <join-columns>
         <join-column name="id_cosecha" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="idCliente" target-entity="Cliente">
+      <join-columns>
+        <join-column name="id_cliente" referenced-column-name="id"/>
       </join-columns>
     </many-to-one>
   </entity>

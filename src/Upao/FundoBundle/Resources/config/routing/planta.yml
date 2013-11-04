@@ -1,3 +1,7 @@
+planta_sembrar:
+    pattern:  /sembrar
+    defaults: { _controller: "UpaoFundoBundle:Planta:sembrar" }
+
 planta:
     pattern:  /
     defaults: { _controller: "UpaoFundoBundle:Planta:index" }

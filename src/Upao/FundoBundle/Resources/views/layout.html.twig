@@ -1,0 +1,162 @@
+<!doctype html>
+<!--[if lt IE 7 ]>
+<html class="ie ie6 no-js" lang="es" xmlns="http://www.w3.org/1999/xhtml"> <![endif]-->
+<!--[if IE 7 ]>
+<html class="ie ie7 no-js" lang="es" xmlns="http://www.w3.org/1999/xhtml"> <![endif]-->
+<!--[if IE 8 ]>
+<html class="ie ie8 no-js" lang="es" xmlns="http://www.w3.org/1999/xhtml"> <![endif]-->
+<!--[if IE 9 ]>
+<html class="ie ie9 no-js" lang="es" xmlns="http://www.w3.org/1999/xhtml"> <![endif]-->
+<!--[if gt IE 9]><!-->
+<html class="no-js" lang="es" xmlns="http://www.w3.org/1999/xhtml"><!--<![endif]-->
+
+<head data-template-set="html5-reset">
+
+    <meta charset="utf-8"/>
+    <title>{% block title %}Fundo "Las Lomas"{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+    <!--[if ie]>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <![endif]-->
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
+
+    {% block og_extra %}
+    {% endblock %}
+
+
+    {% stylesheets
+    'css/blitzer/jquery-ui.css'
+    'css/bootstrap.css'
+    'css/bootstrap-theme.css'
+    'css/offcanvas.css'
+    'css/template.css'
+
+    filter='?yui_css'
+    output='assetic/css/fundo.min.css' %}
+    <link rel="stylesheet" href="{{ asset(asset_url) }}"/>
+    {% endstylesheets %}
+
+
+
+    <!--
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    -->
+    <script>window.jQuery || document.write("<script src='/js/jquery.js'>\x3C/script>")</script>
+
+</head>
+<body>
+
+<div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{{ path('inicio') }}">Fundo "Las Lomas"</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="{{ path('inicio') }}">Inicio</a></li>
+                <li><a href="{{ path('abono') }}">Abono</a></li>
+                <li><a href="{{ path('cliente') }}">Cliente</a></li>
+                <li><a href="{{ path('cosecha') }}">Cosecha</a></li>
+                <li><a href="{{ path('empleado') }}">Empleado</a></li>
+                <li><a href="{{ path('venta') }}">Venta</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row row-offcanvas row-offcanvas-right">
+        {% if layout == 'full' %}
+        <div class="col-xs-12 col-sm-12">
+            {% else %}
+            <div class="col-xs-12 col-sm-9">
+                {% endif %}
+
+                <p class="pull-right visible-xs">
+                    <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+                </p>
+
+                {% block featured %}{% endblock %}
+
+
+                {% for flashMessage in app.session.flashbag.get('error') %}
+                    <div class="alert alert-danger">
+                        {{ flashMessage }}
+                    </div>
+                {% endfor %}
+                {% for flashMessage in app.session.flashbag.get('ok') %}
+                    <div class="alert alert-success">
+                        {{ flashMessage }}
+                    </div>
+                {% endfor %}
+                {% for flashMessage in app.session.flashbag.get('alert') %}
+                    <div class="alert">
+                        {{ flashMessage }}
+                    </div>
+                {% endfor %}
+                {% for flashMessage in app.session.flashbag.get('info') %}
+                    <div class="alert alert-info">
+                        {{ flashMessage }}
+                    </div>
+                {% endfor %}
+
+                <div class="row">
+                    {% block body %}{% endblock %}
+                    {% block content %}{% endblock %}
+                </div>
+
+                {% if layout == 'full' %}
+            </div>
+            {% else %}
+        </div>
+        {% endif %}
+
+        {% if layout != 'full' %}
+            <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+                {% block sidebar %}
+                    {% include 'UpaoFundoBundle:Bloque:sidebar.html.twig' %}
+                {% endblock %}
+
+            </div>
+
+
+        {% endif %}
+
+    </div>
+    <hr>
+    <footer>
+        {% block footer %}
+            {% include 'UpaoFundoBundle:Bloque:footer.html.twig' %}
+        {% endblock %}
+    </footer>
+</div>
+
+
+{% javascripts
+
+'js/jquery-ui.js'
+'js/bootstrap.js'
+'js/offcanvas.js'
+'js/selectize.js'
+'js/fundo.js'
+
+filter='?closure'
+output='assetic/js/fundo.min.js' %}
+<script type="text/javascript" src="{{ asset(asset_url) }}"></script>
+{% endjavascripts %}
+
+
+{% block javascript %}
+
+
+
+{% endblock %}
+
+
+</body>
+</html>

@@ -1,64 +1,68 @@
+inicio:
+    pattern:  /
+    defaults: { _controller: UpaoFundoBundle:Principal:index }
+
 upao_fundo_homepage:
     pattern:  /hello/{name}
     defaults: { _controller: UpaoFundoBundle:Default:index }
 
-UpaoFundoBundle_abono:
+abono:
     resource: "@UpaoFundoBundle/Resources/config/routing/abono.yml"
     prefix:   /abono
 
-UpaoFundoBundle_abonoplanta:
+abonoplanta:
     resource: "@UpaoFundoBundle/Resources/config/routing/abonoplanta.yml"
     prefix:   /abonoplanta
 
-UpaoFundoBundle_cliente:
+cliente:
     resource: "@UpaoFundoBundle/Resources/config/routing/cliente.yml"
     prefix:   /cliente
 
-UpaoFundoBundle_cosecha:
+cosecha:
     resource: "@UpaoFundoBundle/Resources/config/routing/cosecha.yml"
     prefix:   /cosecha
 
-UpaoFundoBundle_cosechaplanta:
+cosechaplanta:
     resource: "@UpaoFundoBundle/Resources/config/routing/cosechaplanta.yml"
     prefix:   /cosechaplanta
 
-UpaoFundoBundle_empleado:
+empleado:
     resource: "@UpaoFundoBundle/Resources/config/routing/empleado.yml"
     prefix:   /empleado
 
-UpaoFundoBundle_estadoambiente:
+estadoambiente:
     resource: "@UpaoFundoBundle/Resources/config/routing/estadoambiente.yml"
     prefix:   /estadoambiente
 
-UpaoFundoBundle_fumigacion:
+fumigacion:
     resource: "@UpaoFundoBundle/Resources/config/routing/fumigacion.yml"
     prefix:   /fumigacion
 
-UpaoFundoBundle_fumigacionplanta:
+fumigacionplanta:
     resource: "@UpaoFundoBundle/Resources/config/routing/fumigacionplanta.yml"
     prefix:   /fumigacionplanta
 
-UpaoFundoBundle_pedido:
+pedido:
     resource: "@UpaoFundoBundle/Resources/config/routing/pedido.yml"
     prefix:   /pedido
 
-UpaoFundoBundle_planta:
+planta:
     resource: "@UpaoFundoBundle/Resources/config/routing/planta.yml"
     prefix:   /planta
 
-UpaoFundoBundle_problema:
+problema:
     resource: "@UpaoFundoBundle/Resources/config/routing/problema.yml"
     prefix:   /problema
 
-UpaoFundoBundle_proveedor:
+proveedor:
     resource: "@UpaoFundoBundle/Resources/config/routing/proveedor.yml"
     prefix:   /proveedor
 
-UpaoFundoBundle_tipoplanta:
+tipoplanta:
     resource: "@UpaoFundoBundle/Resources/config/routing/tipoplanta.yml"
     prefix:   /tipoplanta
 
-UpaoFundoBundle_venta:
+venta:
     resource: "@UpaoFundoBundle/Resources/config/routing/venta.yml"
     prefix:   /venta
 

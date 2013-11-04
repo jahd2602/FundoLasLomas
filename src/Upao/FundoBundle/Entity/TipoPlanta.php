@@ -36,9 +36,6 @@ class TipoPlanta
     private $id;
 
 
-    public function __toString(){
-        return $this->getNombre();
-    }
 
     /**
      * Set nombre

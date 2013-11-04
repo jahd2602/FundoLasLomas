@@ -22,16 +22,6 @@ class FumigacionPlanta
     private $id;
 
     /**
-     * @var \Upao\FundoBundle\Entity\Planta
-     *
-     * @ORM\ManyToOne(targetEntity="Upao\FundoBundle\Entity\Planta")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_planta", referencedColumnName="id")
-     * })
-     */
-    private $idPlanta;
-
-    /**
      * @var \Upao\FundoBundle\Entity\Fumigacion
      *
      * @ORM\ManyToOne(targetEntity="Upao\FundoBundle\Entity\Fumigacion")
@@ -40,6 +30,16 @@ class FumigacionPlanta
      * })
      */
     private $idFumigacion;
+
+    /**
+     * @var \Upao\FundoBundle\Entity\Planta
+     *
+     * @ORM\ManyToOne(targetEntity="Upao\FundoBundle\Entity\Planta")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_planta", referencedColumnName="id")
+     * })
+     */
+    private $idPlanta;
 
 
 
@@ -51,29 +51,6 @@ class FumigacionPlanta
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set idPlanta
-     *
-     * @param \Upao\FundoBundle\Entity\Planta $idPlanta
-     * @return FumigacionPlanta
-     */
-    public function setIdPlanta(\Upao\FundoBundle\Entity\Planta $idPlanta = null)
-    {
-        $this->idPlanta = $idPlanta;
-    
-        return $this;
-    }
-
-    /**
-     * Get idPlanta
-     *
-     * @return \Upao\FundoBundle\Entity\Planta 
-     */
-    public function getIdPlanta()
-    {
-        return $this->idPlanta;
     }
 
     /**
@@ -97,5 +74,28 @@ class FumigacionPlanta
     public function getIdFumigacion()
     {
         return $this->idFumigacion;
+    }
+
+    /**
+     * Set idPlanta
+     *
+     * @param \Upao\FundoBundle\Entity\Planta $idPlanta
+     * @return FumigacionPlanta
+     */
+    public function setIdPlanta(\Upao\FundoBundle\Entity\Planta $idPlanta = null)
+    {
+        $this->idPlanta = $idPlanta;
+    
+        return $this;
+    }
+
+    /**
+     * Get idPlanta
+     *
+     * @return \Upao\FundoBundle\Entity\Planta 
+     */
+    public function getIdPlanta()
+    {
+        return $this->idPlanta;
     }
 }

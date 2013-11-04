@@ -22,16 +22,6 @@ class AbonoPlanta
     private $id;
 
     /**
-     * @var \Upao\FundoBundle\Entity\Abono
-     *
-     * @ORM\ManyToOne(targetEntity="Upao\FundoBundle\Entity\Abono")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_abono", referencedColumnName="id")
-     * })
-     */
-    private $idAbono;
-
-    /**
      * @var \Upao\FundoBundle\Entity\Planta
      *
      * @ORM\ManyToOne(targetEntity="Upao\FundoBundle\Entity\Planta")
@@ -40,6 +30,16 @@ class AbonoPlanta
      * })
      */
     private $idPlanta;
+
+    /**
+     * @var \Upao\FundoBundle\Entity\Abono
+     *
+     * @ORM\ManyToOne(targetEntity="Upao\FundoBundle\Entity\Abono")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_abono", referencedColumnName="id")
+     * })
+     */
+    private $idAbono;
 
 
 
@@ -51,29 +51,6 @@ class AbonoPlanta
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set idAbono
-     *
-     * @param \Upao\FundoBundle\Entity\Abono $idAbono
-     * @return AbonoPlanta
-     */
-    public function setIdAbono(\Upao\FundoBundle\Entity\Abono $idAbono = null)
-    {
-        $this->idAbono = $idAbono;
-    
-        return $this;
-    }
-
-    /**
-     * Get idAbono
-     *
-     * @return \Upao\FundoBundle\Entity\Abono 
-     */
-    public function getIdAbono()
-    {
-        return $this->idAbono;
     }
 
     /**
@@ -97,5 +74,28 @@ class AbonoPlanta
     public function getIdPlanta()
     {
         return $this->idPlanta;
+    }
+
+    /**
+     * Set idAbono
+     *
+     * @param \Upao\FundoBundle\Entity\Abono $idAbono
+     * @return AbonoPlanta
+     */
+    public function setIdAbono(\Upao\FundoBundle\Entity\Abono $idAbono = null)
+    {
+        $this->idAbono = $idAbono;
+    
+        return $this;
+    }
+
+    /**
+     * Get idAbono
+     *
+     * @return \Upao\FundoBundle\Entity\Abono 
+     */
+    public function getIdAbono()
+    {
+        return $this->idAbono;
     }
 }

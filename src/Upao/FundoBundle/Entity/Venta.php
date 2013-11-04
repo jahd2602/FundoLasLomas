@@ -43,16 +43,6 @@ class Venta
     private $id;
 
     /**
-     * @var \Upao\FundoBundle\Entity\Cliente
-     *
-     * @ORM\ManyToOne(targetEntity="Upao\FundoBundle\Entity\Cliente")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_cliente", referencedColumnName="id")
-     * })
-     */
-    private $idCliente;
-
-    /**
      * @var \Upao\FundoBundle\Entity\Cosecha
      *
      * @ORM\ManyToOne(targetEntity="Upao\FundoBundle\Entity\Cosecha")
@@ -61,6 +51,16 @@ class Venta
      * })
      */
     private $idCosecha;
+
+    /**
+     * @var \Upao\FundoBundle\Entity\Cliente
+     *
+     * @ORM\ManyToOne(targetEntity="Upao\FundoBundle\Entity\Cliente")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_cliente", referencedColumnName="id")
+     * })
+     */
+    private $idCliente;
 
 
 
@@ -144,29 +144,6 @@ class Venta
     }
 
     /**
-     * Set idCliente
-     *
-     * @param \Upao\FundoBundle\Entity\Cliente $idCliente
-     * @return Venta
-     */
-    public function setIdCliente(\Upao\FundoBundle\Entity\Cliente $idCliente = null)
-    {
-        $this->idCliente = $idCliente;
-    
-        return $this;
-    }
-
-    /**
-     * Get idCliente
-     *
-     * @return \Upao\FundoBundle\Entity\Cliente 
-     */
-    public function getIdCliente()
-    {
-        return $this->idCliente;
-    }
-
-    /**
      * Set idCosecha
      *
      * @param \Upao\FundoBundle\Entity\Cosecha $idCosecha
@@ -187,5 +164,28 @@ class Venta
     public function getIdCosecha()
     {
         return $this->idCosecha;
+    }
+
+    /**
+     * Set idCliente
+     *
+     * @param \Upao\FundoBundle\Entity\Cliente $idCliente
+     * @return Venta
+     */
+    public function setIdCliente(\Upao\FundoBundle\Entity\Cliente $idCliente = null)
+    {
+        $this->idCliente = $idCliente;
+    
+        return $this;
+    }
+
+    /**
+     * Get idCliente
+     *
+     * @return \Upao\FundoBundle\Entity\Cliente 
+     */
+    public function getIdCliente()
+    {
+        return $this->idCliente;
     }
 }

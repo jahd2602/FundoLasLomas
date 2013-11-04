@@ -21,7 +21,8 @@
         "gregwar/image-bundle": "dev-master",
         "gregwar/captcha-bundle": "dev-master",
         "doctrine/doctrine-fixtures-bundle": "dev-master",
-        "incenteev/composer-parameter-handler": "~2.0"
+        "incenteev/composer-parameter-handler": "~2.0",
+        "icomefromthenet/reverse-regex" : "dev-master"
     },
     "scripts": {
         "post-install-cmd": [

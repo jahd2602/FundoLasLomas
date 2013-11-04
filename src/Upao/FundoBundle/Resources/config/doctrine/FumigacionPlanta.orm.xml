@@ -4,14 +4,14 @@
     <id name="id" type="integer" column="id">
       <generator strategy="IDENTITY"/>
     </id>
-    <many-to-one field="idPlanta" target-entity="Planta">
-      <join-columns>
-        <join-column name="id_planta" referenced-column-name="id"/>
-      </join-columns>
-    </many-to-one>
     <many-to-one field="idFumigacion" target-entity="Fumigacion">
       <join-columns>
         <join-column name="id_fumigacion" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="idPlanta" target-entity="Planta">
+      <join-columns>
+        <join-column name="id_planta" referenced-column-name="id"/>
       </join-columns>
     </many-to-one>
   </entity>

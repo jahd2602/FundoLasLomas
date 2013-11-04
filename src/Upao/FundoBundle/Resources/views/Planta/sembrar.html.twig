@@ -1,0 +1,91 @@
+{% block body %}
+    <div class="modal fade" id="sembrar" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+
+            <form class="form-horizontal form-accion" action="{{ path('planta_sembrar') }}" method="post" role="form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Sembrar</h4>
+                    </div>
+                    <div class="modal-body">
+
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Posiciones</label>
+
+                            <div class="col-sm-9">
+                                <input type="text" required name="rango" class="form-control rango-seleccionado" placeholder="">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Tipo Planta</label>
+
+                            <div class="col-sm-9">
+                                <select required class="form-control" name="idTipoPlanta" placeholder="">
+                                    <option value="">Seleccione</option>
+
+                                    {% for tipoPlanta in tiposPlanta %}
+                                        <option value="{{ tipoPlanta.id }}">{{ tipoPlanta.nombre }}</option>
+                                    {% endfor %}
+
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Proveedor</label>
+
+                            <div class="col-sm-9">
+                                <select required class="form-control" name="idProveedor" placeholder="">
+                                    <option value="">Seleccione</option>
+
+                                    {% for proveedor in proveedores %}
+                                        <option value="{{ proveedor.id }}">{{ proveedor.nombre }}</option>
+                                    {% endfor %}
+
+
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Costo Total</label>
+
+                            <div class="col-sm-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon">S/.</span>
+                                    <input required type="text" name="costo" class="form-control" placeholder="">
+                                </div>
+
+                            </div>
+                        </div>
+
+
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Registrar Siembra</button>
+                    </div>
+
+                </div>
+            </form>
+
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block javascript %}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            console.log('dd')
+        });
+    </script>
+
+
+{% endblock %}

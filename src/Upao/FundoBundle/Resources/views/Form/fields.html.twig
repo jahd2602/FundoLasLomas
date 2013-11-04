@@ -1,0 +1,152 @@
+{% block button_widget %}
+    {% spaceless %}
+        {% if label is empty %}
+            {% set label = name|humanize %}
+        {% endif %}
+        {% if attr is empty %}
+            {% set attr = {'class':'btn btn-default'} %}
+        {% endif %}
+
+
+        <button type="{{ type|default('button') }}" {{ block('button_attributes') }}>{{ label|trans({}, translation_domain) }}</button>
+    {% endspaceless %}
+{% endblock button_widget %}
+
+{% block submit_widget %}
+    {% spaceless %}
+        {% if attr is empty %}
+            {% set attr = {'class':'btn btn-primary'} %}
+        {% endif %}
+
+        {% set type = type|default('submit') %}
+        {{ block('button_widget') }}
+    {% endspaceless %}
+{% endblock submit_widget %}
+
+{% block reset_widget %}
+    {% spaceless %}
+        {% if attr is empty %}
+            {% set attr = {'class':'btn btn-default'} %}
+        {% endif %}
+
+        {% set type = type|default('reset') %}
+        {{ block('button_widget') }}
+    {% endspaceless %}
+{% endblock reset_widget %}
+
+
+{% block form_widget_simple %}
+    {% spaceless %}
+        {% set type = type|default('text') %}
+        {% if attr is empty %}
+            {% set attr = {'class':'form-control'} %}
+        {% endif %}
+        <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+    {% endspaceless %}
+{% endblock form_widget_simple %}
+
+{% block textarea_widget %}
+    {% spaceless %}
+        {% if attr is empty %}
+            {% set attr = {'class':'form-control'} %}
+        {% endif %}
+        <textarea {{ block('widget_attributes') }}>{{ value }}</textarea>
+    {% endspaceless %}
+{% endblock textarea_widget %}
+
+
+{% block choice_widget_collapsed %}
+    {% spaceless %}
+        {% if required and empty_value is none and not empty_value_in_choices %}
+            {% set required = false %}
+        {% endif %}
+        {% if attr is empty %}
+            {% set attr = {'class':'form-control'} %}
+        {% endif %}
+        <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+            {% if empty_value is not none %}
+                <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
+            {% endif %}
+            {% if preferred_choices|length > 0 %}
+                {% set options = preferred_choices %}
+                {{ block('choice_widget_options') }}
+                {% if choices|length > 0 and separator is not none %}
+                    <option disabled="disabled">{{ separator }}</option>
+                {% endif %}
+            {% endif %}
+            {% set options = choices %}
+            {{ block('choice_widget_options') }}
+        </select>
+    {% endspaceless %}
+{% endblock choice_widget_collapsed %}
+
+
+{% block form_start %}
+    {% spaceless %}
+        {% set method = method|upper %}
+        {% if method in ["GET", "POST"] %}
+            {% set form_method = method %}
+        {% else %}
+            {% set form_method = "POST" %}
+        {% endif %}
+        {% if attr is empty %}
+            {% set attr = {'class':'form-horizontal','role':'form'} %}
+        {% endif %}
+        <form name="{{ form.vars.name }}"
+              method="{{ form_method|lower }}" action="{{ action }}"{% for attrname, attrvalue in attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}{% if multipart %} enctype="multipart/form-data"{% endif %}>
+        {% if form_method != method %}
+            <input type="hidden" name="_method" value="{{ method }}"/>
+        {% endif %}
+    {% endspaceless %}
+{% endblock form_start %}
+
+{% block button_row %}
+    {% spaceless %}
+        <div class="form-group">
+            <div class="col-sm-7 col-sm-offset-3">
+                {{ form_widget(form) }}
+            </div>
+        </div>
+    {% endspaceless %}
+{% endblock button_row %}
+
+{% block form_row %}
+    {% spaceless %}
+        <div class="form-group">
+            {{ form_label(form, null, {'label_attr': {'class': 'col-sm-3 control-label' }}) }}
+            <div class="col-sm-7">
+
+                {{ form_errors(form) }}
+                {{ form_widget(form) }}
+                {% if help is defined %}
+                    <span class="help-block">{{ help }}</span>
+                {% endif %}
+            </div>
+        </div>
+    {% endspaceless %}
+{% endblock form_row %}
+
+{% block form_errors %}
+    {% spaceless %}
+        {% if errors|length > 0 %}
+            <div class="alert alert-danger">
+
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error.messagePluralization is null
+                            ? error.messageTemplate|trans(error.messageParameters, 'validators')
+                            : error.messageTemplate|transchoice(error.messagePluralization, error.messageParameters, 'validators') }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    {% endspaceless %}
+{% endblock form_errors %}
+
+{% block captcha_widget %}
+    {% spaceless %}
+        <img src="{{ captcha_code }}" title="captcha" width="{{ captcha_width }}" height="{{ captcha_height }}"
+             alt="captcha"/>
+        {{ form_widget(form) }}
+    {% endspaceless %}
+{% endblock %}

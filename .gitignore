@@ -11,7 +11,10 @@ vendor/*
 */cache/*
 web/uploads/*
 web/bundles/*
+web/assetic/*
+web/less/css/*
 web/css/template.css
+web/css/bootstrap.css
 
 # Configuration files
 app/config/parameters.ini

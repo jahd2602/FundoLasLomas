@@ -27,6 +27,13 @@ class Abono
     private $observacion;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fecha", type="datetime", nullable=true)
+     */
+    private $fecha;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="id", type="integer")
@@ -91,6 +98,29 @@ class Abono
     public function getObservacion()
     {
         return $this->observacion;
+    }
+
+    /**
+     * Set fecha
+     *
+     * @param \DateTime $fecha
+     * @return Abono
+     */
+    public function setFecha($fecha)
+    {
+        $this->fecha = $fecha;
+    
+        return $this;
+    }
+
+    /**
+     * Get fecha
+     *
+     * @return \DateTime 
+     */
+    public function getFecha()
+    {
+        return $this->fecha;
     }
 
     /**

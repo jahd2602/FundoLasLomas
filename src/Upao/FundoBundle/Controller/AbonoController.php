@@ -21,6 +21,8 @@ class AbonoController extends Controller
      */
     public function indexAction()
     {
+
+
         $em = $this->getDoctrine()->getManager();
 
         $entities = $em->getRepository('UpaoFundoBundle:Abono')->findAll();
