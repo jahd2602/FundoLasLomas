@@ -4,11 +4,11 @@
 
     <form {% block enctype %}{{ form_enctype(form) }}{% endblock %}
             class="form-horizontal form-accion"
-            action="{% block action %}{{ path('planta_sembrar') }}{% endblock %}"
+            action="{% block action %}{{ path('planta_abonar') }}{% endblock %}"
             method="post" role="form">
 
         <div class="modal-header">
-            <h4 class="modal-title">{% block title %}Sembrar{% endblock %}</h4>
+            <h4 class="modal-title">{% block title %}Abonar{% endblock %}</h4>
         </div>
 
         <div class="modal-body">
@@ -25,7 +25,7 @@
         <div class="modal-footer">
 
             {% block buttons %}
-                <button type="submit" class="btn btn-primary">Registrar Siembra</button>
+                <button type="submit" class="btn btn-primary">Registrar Abonamiento</button>
             {% endblock %}
         </div>
 
@@ -37,7 +37,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-
+          
         });
     </script>
 

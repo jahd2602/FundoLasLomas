@@ -43,6 +43,12 @@ class Cliente
     private $id;
 
 
+    /**
+     * @return string
+     */
+    public function __toString(){
+        return $this->getNombre();
+    }
 
     /**
      * Set nombre

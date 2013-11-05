@@ -2,6 +2,30 @@ planta_sembrar:
     pattern:  /sembrar
     defaults: { _controller: "UpaoFundoBundle:Planta:sembrar" }
 
+planta_regar:
+    pattern:  /regar
+    defaults: { _controller: "UpaoFundoBundle:Planta:regar" }
+
+planta_abonar:
+    pattern:  /abonar
+    defaults: { _controller: "UpaoFundoBundle:Planta:abonar" }
+
+planta_reportar_problema:
+    pattern:  /reportar_problema
+    defaults: { _controller: "UpaoFundoBundle:Planta:reportarProblema" }
+
+planta_fumigar:
+    pattern:  /fumigar
+    defaults: { _controller: "UpaoFundoBundle:Planta:fumigar" }
+
+planta_cosechar:
+    pattern:  /cosechar
+    defaults: { _controller: "UpaoFundoBundle:Planta:cosechar" }
+
+planta_remover:
+    pattern:  /remover
+    defaults: { _controller: "UpaoFundoBundle:Planta:remover" }
+
 planta:
     pattern:  /
     defaults: { _controller: "UpaoFundoBundle:Planta:index" }

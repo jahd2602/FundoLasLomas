@@ -1,10 +1,16 @@
 inicio:
     pattern:  /
-    defaults: { _controller: UpaoFundoBundle:Principal:index }
+    defaults: { _controller: UpaoFundoBundle:Fundo:index }
+
 
 upao_fundo_homepage:
     pattern:  /hello/{name}
     defaults: { _controller: UpaoFundoBundle:Default:index }
+
+
+fundo:
+    resource: "@UpaoFundoBundle/Resources/config/routing/fundo.yml"
+    prefix:   /fundo
 
 abono:
     resource: "@UpaoFundoBundle/Resources/config/routing/abono.yml"

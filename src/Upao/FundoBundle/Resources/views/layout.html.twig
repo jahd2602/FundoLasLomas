@@ -30,6 +30,8 @@
     'css/bootstrap-theme.css'
     'css/offcanvas.css'
     'css/template.css'
+    'css/jquery.custombox.css'
+    'css/bootstrap-datetimepicker.css'
 
     filter='?yui_css'
     output='assetic/css/fundo.min.css' %}
@@ -59,11 +61,12 @@
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li class="active"><a href="{{ path('inicio') }}">Inicio</a></li>
-                <li><a href="{{ path('abono') }}">Abono</a></li>
                 <li><a href="{{ path('cliente') }}">Cliente</a></li>
-                <li><a href="{{ path('cosecha') }}">Cosecha</a></li>
                 <li><a href="{{ path('empleado') }}">Empleado</a></li>
                 <li><a href="{{ path('venta') }}">Venta</a></li>
+                <li><a href="{{ path('pedido') }}">Pedido</a></li>
+                <li><a href="{{ path('proveedor') }}">Proveedor</a></li>
+                <li><a href="{{ path('tipoplanta') }}">Tipos de Planta</a></li>
             </ul>
         </div>
     </div>
@@ -78,8 +81,10 @@
                 {% endif %}
 
                 <p class="pull-right visible-xs">
-                    <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+                    <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Menu Derecho</button>
                 </p>
+
+                <div class="clearfix"></div>
 
                 {% block featured %}{% endblock %}
 
@@ -136,13 +141,17 @@
     </footer>
 </div>
 
-
 {% javascripts
 
 'js/jquery-ui.js'
+'js/jquery.cluetip.js'
 'js/bootstrap.js'
+'js/jquery.custombox.js'
+'js/jquery.bsAlerts.js'
 'js/offcanvas.js'
 'js/selectize.js'
+'js/bootstrap-datetimepicker.js'
+'js/i18n/bootstrap-datetimepicker.es.js'
 'js/fundo.js'
 
 filter='?closure'

@@ -1,0 +1,8 @@
+fundo_sembrar:
+    pattern:  /
+    defaults: { _controller: "UpaoFundoBundle:Fundo:index" }
+
+fundo_region:
+    pattern:  /region
+    defaults: { _controller: UpaoFundoBundle:Fundo:region }
+

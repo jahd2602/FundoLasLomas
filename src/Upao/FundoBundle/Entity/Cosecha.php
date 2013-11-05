@@ -49,7 +49,12 @@ class Cosecha
      */
     private $id;
 
-
+    /**
+     * @return string
+     */
+    public function __toString(){
+        return $this->getFecha()->format('Y-m-d');
+    }
 
     /**
      * Set totalKilos

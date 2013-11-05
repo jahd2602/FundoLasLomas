@@ -7,9 +7,26 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Component\Validator\Constraints\DateTime;
+use Upao\FundoBundle\Entity\Abono;
+use Upao\FundoBundle\Entity\AbonoPlanta;
+use Upao\FundoBundle\Entity\Cosecha;
+use Upao\FundoBundle\Entity\CosechaPlanta;
+use Upao\FundoBundle\Entity\Fumigacion;
+use Upao\FundoBundle\Entity\FumigacionPlanta;
 use Upao\FundoBundle\Entity\Pedido;
 use Upao\FundoBundle\Entity\Planta;
+use Upao\FundoBundle\Entity\Problema;
+use Upao\FundoBundle\Entity\Riego;
+use Upao\FundoBundle\Entity\RiegoPlanta;
 use Upao\FundoBundle\Form\PlantaType;
+use Upao\FundoBundle\Form\RegistrarAbonoType;
+use Upao\FundoBundle\Form\RegistrarCosechaType;
+use Upao\FundoBundle\Form\RegistrarProblemaType;
+use Upao\FundoBundle\Form\RegistrarRiegoType;
+use Upao\FundoBundle\Form\RegistrarSiembraType;
+use Upao\FundoBundle\Form\RemovePlantaType;
+use Upao\FundoBundle\Form\RemoverPlantaType;
 
 /**
  * Planta controller.
@@ -18,10 +35,9 @@ use Upao\FundoBundle\Form\PlantaType;
 class PlantaController extends Controller
 {
 
-
     /**
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function sembrarAction(Request $request)
     {
@@ -29,89 +45,679 @@ class PlantaController extends Controller
         $em = $this->getDoctrine()->getManager();
         $session = $request->getSession();
 
+        $form = $this->createForm(new RegistrarSiembraType());
+
         if ($request->getMethod() === 'POST') {
             $data = array();
 
-            $idProveedor = $request->get('idProveedor');
-            $idTipoPlanta = $request->get('idTipoPlanta');
-            $rango = $request->get('rango');
-            $costo = (float)$request->get('costo');
+            $form->handleRequest($request);
+            if ($form->isValid()) {
 
-            $proveedor = $em->getRepository('UpaoFundoBundle:Proveedor')->find($idProveedor);
-            $tipoPlanta = $em->getRepository('UpaoFundoBundle:TipoPlanta')->find($idTipoPlanta);
+                $data = $form->getData();
+                $rango = $data['posiciones'];
+                $costo = (float)$data['costo'];
 
-            if (!$proveedor || !$tipoPlanta) {
-                return new Response('Datos Incompletos', 404);
-            }
 
-            $valores = explode(',', $rango);
-            $celdas = array();
-            foreach ($valores as $valor) {
-                $celda = explode('|', $valor);
-                $celdas[] = array(
-                    'columna' => isset($celda[0]) ? $celda[0] : 0,
-                    'fila' => isset($celda[1]) ? $celda[1] : 0,
+                $valores = explode(',', $rango);
+                $celdas = array();
+                foreach ($valores as $valor) {
+                    $celdas[] = array(
+                        'columna' => isset($valor[0]) ? Planta::toNumber(strtolower($valor[0])) : 0,
+                        'fila' => isset($valor[1]) ? $valor[1] : 0,
+                    );
+                }
+
+
+                $em->getConnection()->beginTransaction();
+
+                try {
+
+                    $pedido = new Pedido();
+                    $pedido->setCosto($costo);
+                    $pedido->setFecha(new \DateTime($data['fecha']));
+                    $pedido->setIdProveedor($data['idProveedor']);
+
+                    $em->persist($pedido);
+
+                    foreach ($celdas as $celda) {
+
+
+                        $planta = $em->getRepository('UpaoFundoBundle:Planta')
+                            ->findOneBy(
+                                array(
+                                    'fila' => $celda['fila'],
+                                    'columna' => $celda['columna'],
+                                    'estado' => 'SEMBRADA'
+                                ));
+
+                        if ($planta) {
+                            $planta->setEstado('REMOVIDA');
+                            $em->persist($planta);
+                        }
+
+                        $planta = new Planta();
+                        $planta->setColumna($celda['columna']);
+                        $planta->setFila($celda['fila']);
+                        $planta->setIdPedido($pedido);
+                        $planta->setIdTipoPlanta($data['idTipoPlanta']);
+                        $planta->setEstado('SEMBRADA');
+
+                        $em->persist($planta);
+
+                    }
+
+                    $em->flush();
+                    $em->getConnection()->commit();
+
+
+                    $data = array(
+                        'status' => 200,
+                        'success' => true,
+                        'message' => 'Se registró la siembra correctamente'
+
+                    );
+
+                } catch (Exception $e) {
+
+                    $em->getConnection()->rollback();
+
+                    $data = array(
+                        'status' => 500,
+                        'error' => true,
+                        'message' => 'Error interno'
+
+                    );
+                }
+
+
+            } else {
+                $data = array(
+                    'status' => 404,
+                    'error' => true,
+                    'message' => 'Llene los datos correctamente'
                 );
             }
 
-            $em->getConnection()->beginTransaction();
-
-            try {
-
-                $pedido = new Pedido();
-                $pedido->setCosto($costo);
-                $pedido->setFecha(new Date());
-                $pedido->setIdProveedor($proveedor);
-
-                $em->persist($pedido);
-
-                foreach ($celdas as $celda) {
-
-                    $planta = new Planta();
-                    $planta->setColumna($celda['columna']);
-                    $planta->setFila($celda['fila']);
-                    $planta->setIdPedido($pedido);
-                    $planta->setIdTipoPlanta($tipoPlanta);
-                    $planta->setEstado('SEMBRADA');
-
-                    $em->persist($planta);
-
-                }
-
-                $em->flush();
-                $em->getConnection()->commit();
-
-            } catch (Exception $e) {
-
-                $em->getConnection()->rollback();
-                throw $e;
-            }
-
-            $data = array(
-                'success' => true,
-
-            );
-
-
             if ($request->isXmlHttpRequest()) {
 
-                return new Response(json_encode($data), 200, array(
+                return new Response(json_encode($data), $data['status'], array(
                     'Content-Type' => 'application/json'
                 ));
 
             } else {
-                $session->getFlashBag()->add('ok', 'se se registró el sembrio correctamente.');
+                $session->getFlashBag()->add($data['status'] === 200 ? 'ok' : 'error', $data['message']);
                 return $this->redirect($this->generateUrl('inicio'));
             }
 
         } else {
 
-            $proveedores = $em->getRepository('UpaoFundoBundle:Proveedor')->findAll();
-            $tiposPlanta = $em->getRepository('UpaoFundoBundle:TipoPlanta')->findAll();
-
             return $this->render('UpaoFundoBundle:Planta:sembrar.html.twig', array(
-                'proveedores' => $proveedores,
-                'tiposPlanta' => $tiposPlanta,
+                'form' => $form->createView(),
+            ));
+        }
+
+    }
+
+
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
+    public function removerAction(Request $request)
+    {
+
+        $em = $this->getDoctrine()->getManager();
+        $session = $request->getSession();
+
+        $form = $this->createForm(new RemoverPlantaType());
+
+        if ($request->getMethod() === 'POST') {
+            $data = array();
+
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+
+                $data = $form->getData();
+                $plantas = $data['plantas'];
+
+
+                $em->getConnection()->beginTransaction();
+
+                try {
+
+
+
+                    foreach ($plantas as $planta) {
+
+                        $planta->setEstado('REMOVIDA');
+                        $em->persist($planta);
+
+                    }
+
+                    $em->flush();
+                    $em->getConnection()->commit();
+
+
+                    $data = array(
+                        'status' => 200,
+                        'success' => true,
+                        'message' => 'Se removió las plantas seleccionadas correctamente'
+
+                    );
+
+                } catch (Exception $e) {
+
+                    $em->getConnection()->rollback();
+
+                    $data = array(
+                        'status' => 500,
+                        'error' => true,
+                        'message' => 'Error interno'
+
+                    );
+                }
+
+
+            } else {
+                $data = array(
+                    'status' => 404,
+                    'error' => true,
+                    'message' => 'Llene los datos correctamente'
+                );
+            }
+
+            if ($request->isXmlHttpRequest()) {
+
+                return new Response(json_encode($data), $data['status'], array(
+                    'Content-Type' => 'application/json'
+                ));
+
+            } else {
+                $session->getFlashBag()->add($data['status'] === 200 ? 'ok' : 'error', $data['message']);
+                return $this->redirect($this->generateUrl('inicio'));
+            }
+
+        } else {
+
+            return $this->render('UpaoFundoBundle:Planta:remover.html.twig', array(
+                'form' => $form->createView(),
+            ));
+        }
+
+    }
+
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
+    public function abonarAction(Request $request)
+    {
+
+        $em = $this->getDoctrine()->getManager();
+        $session = $request->getSession();
+
+        $form = $this->createForm(new RegistrarAbonoType());
+
+        if ($request->getMethod() === 'POST') {
+            $data = array();
+
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+
+                $data = $form->getData();
+                $plantas = $data['plantas'];
+
+
+                $em->getConnection()->beginTransaction();
+
+                try {
+
+                    $abono = new Abono();
+                    $abono->setIdEmpleado($data['idEmpleado']);
+                    $abono->setFecha(new \DateTime($data['fecha']));
+                    $abono->setDescripcion($data['descripcion']);
+                    $abono->setObservacion($data['observacion']);
+
+                    $em->persist($abono);
+
+                    foreach ($plantas as $planta) {
+
+                        $riegoPlanta = new AbonoPlanta();
+                        $riegoPlanta->setIdPlanta($planta);
+                        $riegoPlanta->setIdAbono($abono);
+
+                        $em->persist($riegoPlanta);
+
+                    }
+
+                    $em->flush();
+                    $em->getConnection()->commit();
+
+
+                    $data = array(
+                        'status' => 200,
+                        'success' => true,
+                        'message' => 'Se registró el abonamiento correctamente'
+
+                    );
+
+                } catch (Exception $e) {
+
+                    $em->getConnection()->rollback();
+
+                    $data = array(
+                        'status' => 500,
+                        'error' => true,
+                        'message' => 'Error interno'
+
+                    );
+                }
+
+
+            } else {
+                $data = array(
+                    'status' => 404,
+                    'error' => true,
+                    'message' => 'Llene los datos correctamente'
+                );
+            }
+
+            if ($request->isXmlHttpRequest()) {
+
+                return new Response(json_encode($data), $data['status'], array(
+                    'Content-Type' => 'application/json'
+                ));
+
+            } else {
+                $session->getFlashBag()->add($data['status'] === 200 ? 'ok' : 'error', $data['message']);
+                return $this->redirect($this->generateUrl('inicio'));
+            }
+
+        } else {
+
+            return $this->render('UpaoFundoBundle:Planta:abonar.html.twig', array(
+                'form' => $form->createView(),
+            ));
+        }
+
+    }
+
+
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
+    public function fumigarAction(Request $request)
+    {
+
+        $em = $this->getDoctrine()->getManager();
+        $session = $request->getSession();
+
+        $form = $this->createForm(new RegistrarAbonoType());
+
+        if ($request->getMethod() === 'POST') {
+            $data = array();
+
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+
+                $data = $form->getData();
+                $plantas = $data['plantas'];
+
+
+                $em->getConnection()->beginTransaction();
+
+                try {
+
+                    $fumigacion = new Fumigacion();
+                    $fumigacion->setIdEmpleado($data['idEmpleado']);
+                    $fumigacion->setFecha(new \DateTime($data['fecha']));
+                    $fumigacion->setDescripcion($data['descripcion']);
+                    $fumigacion->setObservacion($data['observacion']);
+
+                    $em->persist($fumigacion);
+
+                    foreach ($plantas as $planta) {
+
+                        $fumigacionPlanta = new FumigacionPlanta();
+                        $fumigacionPlanta->setIdPlanta($planta);
+                        $fumigacionPlanta->setIdFumigacion($fumigacion);
+
+                        $em->persist($fumigacionPlanta);
+
+                    }
+
+                    $em->flush();
+                    $em->getConnection()->commit();
+
+
+                    $data = array(
+                        'status' => 200,
+                        'success' => true,
+                        'message' => 'Se registró la fumigación correctamente'
+
+                    );
+
+                } catch (Exception $e) {
+
+                    $em->getConnection()->rollback();
+
+                    $data = array(
+                        'status' => 500,
+                        'error' => true,
+                        'message' => 'Error interno'
+
+                    );
+                }
+
+
+            } else {
+                $data = array(
+                    'status' => 404,
+                    'error' => true,
+                    'message' => 'Llene los datos correctamente'
+                );
+            }
+
+            if ($request->isXmlHttpRequest()) {
+
+                return new Response(json_encode($data), $data['status'], array(
+                    'Content-Type' => 'application/json'
+                ));
+
+            } else {
+                $session->getFlashBag()->add($data['status'] === 200 ? 'ok' : 'error', $data['message']);
+                return $this->redirect($this->generateUrl('inicio'));
+            }
+
+        } else {
+
+            return $this->render('UpaoFundoBundle:Planta:fumigar.html.twig', array(
+                'form' => $form->createView(),
+            ));
+        }
+
+    }
+
+
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
+    public function cosecharAction(Request $request)
+    {
+
+        $em = $this->getDoctrine()->getManager();
+        $session = $request->getSession();
+
+        $form = $this->createForm(new RegistrarCosechaType());
+
+        if ($request->getMethod() === 'POST') {
+            $data = array();
+
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+
+                $data = $form->getData();
+                $plantas = $data['plantas'];
+
+
+                $em->getConnection()->beginTransaction();
+
+                try {
+
+                    $cosecha = new Cosecha();
+                    $cosecha->setKilosDisponibles($data['kilos_disponibles']);
+                    $cosecha->setFecha(new \DateTime($data['fecha']));
+                    $cosecha->setTotalKilos($data['total_kilos']);
+                    $cosecha->setObservaciones($data['observaciones']);
+
+                    $em->persist($cosecha);
+
+                    foreach ($plantas as $planta) {
+
+                        $cosechaPlanta = new CosechaPlanta();
+                        $cosechaPlanta->setIdPlanta($planta);
+                        $cosechaPlanta->setIdCosecha($cosecha);
+
+                        $em->persist($cosechaPlanta);
+
+                    }
+
+                    $em->flush();
+                    $em->getConnection()->commit();
+
+
+                    $data = array(
+                        'status' => 200,
+                        'success' => true,
+                        'message' => 'Se registró la fumigación correctamente'
+
+                    );
+
+                } catch (Exception $e) {
+
+                    $em->getConnection()->rollback();
+
+                    $data = array(
+                        'status' => 500,
+                        'error' => true,
+                        'message' => 'Error interno'
+
+                    );
+                }
+
+
+            } else {
+                $data = array(
+                    'status' => 404,
+                    'error' => true,
+                    'message' => 'Llene los datos correctamente'
+                );
+            }
+
+            if ($request->isXmlHttpRequest()) {
+
+                return new Response(json_encode($data), $data['status'], array(
+                    'Content-Type' => 'application/json'
+                ));
+
+            } else {
+                $session->getFlashBag()->add($data['status'] === 200 ? 'ok' : 'error', $data['message']);
+                return $this->redirect($this->generateUrl('inicio'));
+            }
+
+        } else {
+
+            return $this->render('UpaoFundoBundle:Planta:cosechar.html.twig', array(
+                'form' => $form->createView(),
+            ));
+        }
+
+    }
+
+
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
+    public function regarAction(Request $request)
+    {
+
+        $em = $this->getDoctrine()->getManager();
+        $session = $request->getSession();
+
+        $form = $this->createForm(new RegistrarRiegoType());
+
+        if ($request->getMethod() === 'POST') {
+            $data = array();
+
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+
+                $data = $form->getData();
+                $plantas = $data['plantas'];
+
+
+                $em->getConnection()->beginTransaction();
+
+                try {
+
+                    $riego = new Riego();
+                    $riego->setIdEmpleado($data['idEmpleado']);
+                    $riego->setFecha(new \DateTime($data['fecha']));
+                    $riego->setObservacion($data['observacion']);
+
+                    $em->persist($riego);
+
+                    foreach ($plantas as $planta) {
+
+                        $riegoPlanta = new RiegoPlanta();
+                        $riegoPlanta->setIdPlanta($planta);
+                        $riegoPlanta->setIdRiego($riego);
+
+                        $em->persist($riegoPlanta);
+
+                    }
+
+                    $em->flush();
+                    $em->getConnection()->commit();
+
+
+                    $data = array(
+                        'status' => 200,
+                        'success' => true,
+                        'message' => 'Se registró el abonamiento correctamente'
+
+                    );
+
+                } catch (Exception $e) {
+
+                    $em->getConnection()->rollback();
+
+                    $data = array(
+                        'status' => 500,
+                        'error' => true,
+                        'message' => 'Error interno'
+
+                    );
+                }
+
+
+            } else {
+                $data = array(
+                    'status' => 404,
+                    'error' => true,
+                    'message' => 'Llene los datos correctamente'
+                );
+            }
+
+            if ($request->isXmlHttpRequest()) {
+
+                return new Response(json_encode($data), $data['status'], array(
+                    'Content-Type' => 'application/json'
+                ));
+
+            } else {
+                $session->getFlashBag()->add($data['status'] === 200 ? 'ok' : 'error', $data['message']);
+                return $this->redirect($this->generateUrl('inicio'));
+            }
+
+        } else {
+
+            return $this->render('UpaoFundoBundle:Planta:regar.html.twig', array(
+                'form' => $form->createView(),
+            ));
+        }
+
+    }
+
+
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
+    public function reportarProblemaAction(Request $request)
+    {
+
+        $em = $this->getDoctrine()->getManager();
+        $session = $request->getSession();
+
+        $form = $this->createForm(new RegistrarProblemaType());
+
+        if ($request->getMethod() === 'POST') {
+            $data = array();
+
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+
+                $data = $form->getData();
+                $plantas = $data['plantas'];
+
+
+                $em->getConnection()->beginTransaction();
+
+                try {
+
+
+                    foreach ($plantas as $planta) {
+
+                        $problema = new Problema();
+                        $problema->setDescripcion($data['descripcion']);
+                        $problema->setFecha(new \DateTime($data['fecha']));
+                        $problema->setIdPlanta($planta);
+                        $problema->setResuelto(false);
+                        $em->persist($problema);
+
+                    }
+
+                    $em->flush();
+                    $em->getConnection()->commit();
+
+
+                    $data = array(
+                        'status' => 200,
+                        'success' => true,
+                        'message' => 'Se registró el problema correctamente'
+
+                    );
+
+                } catch (Exception $e) {
+
+                    $em->getConnection()->rollback();
+
+                    $data = array(
+                        'status' => 500,
+                        'error' => true,
+                        'message' => 'Error interno'
+
+                    );
+                }
+
+
+            } else {
+                $data = array(
+                    'status' => 404,
+                    'error' => true,
+                    'message' => 'Llene los datos correctamente'
+                );
+            }
+
+            if ($request->isXmlHttpRequest()) {
+
+                return new Response(json_encode($data), $data['status'], array(
+                    'Content-Type' => 'application/json'
+                ));
+
+            } else {
+                $session->getFlashBag()->add($data['status'] === 200 ? 'ok' : 'error', $data['message']);
+                return $this->redirect($this->generateUrl('inicio'));
+            }
+
+        } else {
+
+            return $this->render('UpaoFundoBundle:Planta:reportar-problema.html.twig', array(
+                'form' => $form->createView(),
             ));
         }
 
