@@ -36,7 +36,6 @@
     'js/bootstrap.js'
     'js/jquery.custombox.js'
     'js/jquery.bsAlerts.js'
-    'js/offcanvas.js'
     'js/bootstrap-datetimepicker.js'
     'js/i18n/bootstrap-datetimepicker.es.js'
     'js/jquery-ui.js'
@@ -97,58 +96,65 @@
                     <ul class="nav">
                         <li class="active">
                             <a href="{{ path('inicio') }}">
-                                <i class="icon-eye-open">
-                                </i>
                                 <span>Inicio</span>
                             </a>
                         </li>
                         <li class="dropdown-submenu">
-                            <a href="{{ path('cliente') }}"
+                            <a href="{{ path('inicio') }}"
                                class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="icon-beaker">
-                                </i>
-                                <span>Cliente</span>
+                                <span>Planta</span>
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="#">
-                                        Buttons</a>
+                                    <a href="{{ path('abono') }}">Abonamientos</a>
+                                </li>
+                                <li>
+                                    <a href="{{ path('riego') }}">Riegos</a>
+                                </li>
+                                <li>
+                                    <a href="{{ path('cosecha') }}">Cosechas</a>
+                                </li>
+                                <li>
+                                    <a href="{{ path('fumigacion') }}">Fumigaciones</a>
+                                </li>
+                                <li>
+                                    <a href="{{ path('problema') }}">Problemas</a>
                                 </li>
                             </ul>
                         </li>
                         <li>
+                            <a href="{{ path('estadoambiente') }}">
+                                <span>Estado Ambiental</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ path('cliente') }}">
+                                <span>Cliente</span>
+                            </a>
+                        </li>
+                        <li>
                             <a href="{{ path('empleado') }}">
-                                <i class="icon-file-text">
-                                </i>
                                 <span>Empleado</span>
                             </a>
                         </li>
                         <li>
                             <a href="{{ path('venta') }}">
-                                <i class="icon-envelope-alt">
-                                </i>
                                 <span>Venta</span>
                             </a>
                         </li>
                         <li>
                             <a href="{{ path('pedido') }}">
-                                <i class="icon-tasks">
-                                </i>
                                 <span>Pedido</span>
                             </a>
                         </li>
                         <li>
                             <a href="{{ path('proveedor') }}">
-                                <i class="icon-pencil">
-                                </i>
                                 <span>Proveedor</span>
                             </a>
                         </li>
                         <li>
                             <a href="{{ path('tipoplanta') }}">
-                                <i class="icon-time">
-                                </i>
-                                <span>Tipos de Planta</span>
+                                <span>Tipos Planta</span>
                             </a>
                         </li>
                     </ul>
@@ -180,9 +186,10 @@
     <section id="content">
 
         <section class="vbox">
-
-            <header class="header bg-white b-b">Fundo "Las Lomas"</header>
-            <section class="wrapper">
+            <!--
+                        <header class="header bg-white b-b">Fundo "Las Lomas"</header>
+               -->
+            <section class="scrollable wrapper">
 
                 <div class="row">
                     {% if layout == 'full' %}

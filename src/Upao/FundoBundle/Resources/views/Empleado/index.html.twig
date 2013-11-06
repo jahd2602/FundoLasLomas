@@ -1,45 +1,55 @@
 {% extends '::base.html.twig' %}
 
 {% block body -%}
-    <h1>Empleado list</h1>
 
-    <table class="records_list">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Dni</th>
-                <th>Telefono</th>
-                <th>Id</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for entity in entities %}
-            <tr>
-                <td><a href="{{ path('empleado_show', { 'id': entity.id }) }}">{{ entity.nombre }}</a></td>
-                <td>{{ entity.dni }}</td>
-                <td>{{ entity.telefono }}</td>
-                <td>{{ entity.id }}</td>
-                <td>
-                <ul>
-                    <li>
-                        <a href="{{ path('empleado_show', { 'id': entity.id }) }}">show</a>
-                    </li>
-                    <li>
-                        <a href="{{ path('empleado_edit', { 'id': entity.id }) }}">edit</a>
-                    </li>
-                </ul>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <h3>Empleados</h3>
+    <div class="tab-pane" id="datatable">
+        <section class="panel">
+            <div class="table-responsive">
+                <table class="table table-striped m-b-none" data-href="{{ path('empleado') }}" data-ride="datatables">
+                    <thead>
+                    <tr>
+                        <th data-property="nombre" width="50%">Nombre</th>
+                        <th data-property="dni" width="20%">D.N.I.</th>
+                        <th data-property="telefono" width="20%">Teléfono</th>
+                        <th data-property="id" width="10%">Detalle</th>
 
-        <ul>
-        <li>
-            <a href="{{ path('empleado_new') }}">
-                Create a new entry
-            </a>
-        </li>
-    </ul>
-    {% endblock %}
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+
+{% endblock %}
+{% block javascript %}
+    <script>
+        $(document).ready(function () {
+
+            $('[data-ride="datatables"]').each(function () {
+                var $element = $(this);
+                var oTable = $(this).dataTable({
+                    "bProcessing": true,
+                    "sAjaxDataProp": "results",
+                    "sAjaxSource": $element.data('href'),
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                        {"mData": "nombre"},
+                        {"mData": "dni"},
+                        {"mData": "telefono"},
+                        {"mData": "id"}
+                    ],
+                    fnStateLoad: function () {
+                        console.log('cargo');
+                    }
+                });
+            });
+        })
+    </script>
+
+{% endblock %}

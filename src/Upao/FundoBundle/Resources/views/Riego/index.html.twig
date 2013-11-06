@@ -2,16 +2,16 @@
 
 {% block body -%}
 
-    <h3>Registro de Pedidos</h3>
+    <h3>Registro de Riegos</h3>
     <div class="tab-pane" id="datatable">
         <section class="panel">
             <div class="table-responsive">
-                <table class="table table-striped m-b-none" data-href="{{ path('pedido') }}" data-ride="datatables">
+                <table class="table table-striped m-b-none" data-href="{{ path('riego') }}" data-ride="datatables">
                     <thead>
                     <tr>
-                        <th data-property="fecha" width="30%">Fecha</th>
-                        <th data-property="proveedor" width="40%">Proveedor</th>
-                        <th data-property="costo" width="20%">Costo</th>
+                        <th data-property="fecha" width="20%">Fecha</th>
+                        <th data-property="empleado" width="30%">Empleado</th>
+                        <th data-property="observacion" width="40%">Observación</th>
                         <th data-property="id" width="10%">Detalle</th>
 
                     </tr>
@@ -40,8 +40,8 @@
                     "sPaginationType": "full_numbers",
                     "aoColumns": [
                         {"mData": "fecha"},
-                        {"mData": "proveedor"},
-                        {"mData": "costo"},
+                        {"mData": "empleado"},
+                        {"mData": "observacion"},
                         {"mData": "id"}
                     ],
                     fnStateLoad: function () {

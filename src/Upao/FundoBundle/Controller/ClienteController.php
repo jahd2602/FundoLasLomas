@@ -2,6 +2,7 @@
 
 namespace Upao\FundoBundle\Controller;
 
+use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -22,12 +23,38 @@ class ClienteController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
+        $request= $this->getRequest();
+        $entities = $em->getRepository('UpaoFundoBundle:Cliente')
+            ->createQueryBuilder('c')
+            ->orderBy('c.nombre', 'ASC')
+            ->getQuery()
+            ->getResult();
 
-        $entities = $em->getRepository('UpaoFundoBundle:Cliente')->findAll();
 
+
+        $data = array();
+
+        if ($request->isXmlHttpRequest()) {
+
+            foreach ($entities as $cliente) {
+                $data['results'][] = array(
+                    'nombre' => $cliente->getNombre(),
+                    'direccion' => $cliente->getDireccion(),
+                    'telefono' => $cliente->getTelefono(),
+                    'id' => $cliente->getId(),
+                );
+            }
+
+
+            return new \Symfony\Component\HttpFoundation\Response(json_encode($data), 200, array(
+                'Content-Type' => 'application/json'
+            ));
+
+        } else {
         return $this->render('UpaoFundoBundle:Cliente:index.html.twig', array(
             'entities' => $entities,
         ));
+        }
     }
     /**
      * Creates a new Cliente entity.

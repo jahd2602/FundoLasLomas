@@ -2,6 +2,7 @@
 
 namespace Upao\FundoBundle\Controller;
 
+use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -22,12 +23,41 @@ class VentaController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
+        $request = $this->getRequest();
 
-        $entities = $em->getRepository('UpaoFundoBundle:Venta')->findAll();
+        $entities = $em->getRepository('UpaoFundoBundle:Venta')
+            ->createQueryBuilder('v')
+            ->orderBy('v.id', 'DESC')
+            ->getQuery()
+            ->getResult();
 
-        return $this->render('UpaoFundoBundle:Venta:index.html.twig', array(
-            'entities' => $entities,
-        ));
+
+        $data = array();
+
+        if ($request->isXmlHttpRequest()) {
+
+            foreach ($entities as $venta) {
+                $venta = new Venta();
+                $data['results'][] = array(
+                    'cosecha' => $venta->getIdCosecha()->getFecha()->format('Y-m-d'),
+                    'cliente' => $venta->getIdCliente()->getNombre(),
+                    'kilos_vendidos' => $venta->getKilosVendidos(),
+                    'costo' => $venta->getCosto(),
+                    'observaciones' => $venta->getObservaciones(),
+                    'id' => $venta->getId(),
+                );
+            }
+
+
+            return new \Symfony\Component\HttpFoundation\Response(json_encode($data), 200, array(
+                'Content-Type' => 'application/json'
+            ));
+
+        } else {
+            return $this->render('UpaoFundoBundle:Venta:index.html.twig', array(
+                'entities' => $entities,
+            ));
+        }
     }
     /**
      * Creates a new Venta entity.

@@ -2,11 +2,13 @@
 
 namespace Upao\FundoBundle\Controller;
 
+use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Upao\FundoBundle\Entity\Cosecha;
 use Upao\FundoBundle\Form\CosechaType;
+use Upao\FundoBundle\Util\Util;
 
 /**
  * Cosecha controller.
@@ -22,13 +24,40 @@ class CosechaController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
+        $request = $this->getRequest();
+        $entities = $em->getRepository('UpaoFundoBundle:Cosecha')
+            ->createQueryBuilder('c')
+            ->orderBy('c.fecha', 'DESC')
+            ->getQuery()
+            ->getResult();
 
-        $entities = $em->getRepository('UpaoFundoBundle:Cosecha')->findAll();
 
-        return $this->render('UpaoFundoBundle:Cosecha:index.html.twig', array(
-            'entities' => $entities,
-        ));
+        $data = array();
+
+        if ($request->isXmlHttpRequest()) {
+
+            foreach ($entities as $cosecha) {
+                $data['results'][] = array(
+                    'fecha' => $cosecha->getFecha()->format('Y-m-d'),
+                    'total_kilos' => $cosecha->getTotalKilos(),
+                    'kilos_disponibles' => $cosecha->getKilosDisponibles(),
+                    'observaciones' => Util::truncate($cosecha->getObservaciones(), 50),
+                    'id' => $cosecha->getId(),
+                );
+            }
+
+
+            return new \Symfony\Component\HttpFoundation\Response(json_encode($data), 200, array(
+                'Content-Type' => 'application/json'
+            ));
+
+        } else {
+            return $this->render('UpaoFundoBundle:Cosecha:index.html.twig', array(
+                'entities' => $entities,
+            ));
+        }
     }
+
     /**
      * Creates a new Cosecha entity.
      *
@@ -49,17 +78,17 @@ class CosechaController extends Controller
 
         return $this->render('UpaoFundoBundle:Cosecha:new.html.twig', array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
     /**
-    * Creates a form to create a Cosecha entity.
-    *
-    * @param Cosecha $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to create a Cosecha entity.
+     *
+     * @param Cosecha $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createCreateForm(Cosecha $entity)
     {
         $form = $this->createForm(new CosechaType(), $entity, array(
@@ -79,11 +108,11 @@ class CosechaController extends Controller
     public function newAction()
     {
         $entity = new Cosecha();
-        $form   = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($entity);
 
         return $this->render('UpaoFundoBundle:Cosecha:new.html.twig', array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
@@ -104,8 +133,8 @@ class CosechaController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render('UpaoFundoBundle:Cosecha:show.html.twig', array(
-            'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),        ));
+            'entity' => $entity,
+            'delete_form' => $deleteForm->createView(),));
     }
 
     /**
@@ -126,19 +155,19 @@ class CosechaController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render('UpaoFundoBundle:Cosecha:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
 
     /**
-    * Creates a form to edit a Cosecha entity.
-    *
-    * @param Cosecha $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to edit a Cosecha entity.
+     *
+     * @param Cosecha $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createEditForm(Cosecha $entity)
     {
         $form = $this->createForm(new CosechaType(), $entity, array(
@@ -150,6 +179,7 @@ class CosechaController extends Controller
 
         return $form;
     }
+
     /**
      * Edits an existing Cosecha entity.
      *
@@ -175,11 +205,12 @@ class CosechaController extends Controller
         }
 
         return $this->render('UpaoFundoBundle:Cosecha:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
+
     /**
      * Deletes a Cosecha entity.
      *
@@ -217,7 +248,6 @@ class CosechaController extends Controller
             ->setAction($this->generateUrl('cosecha_delete', array('id' => $id)))
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
-        ;
+            ->getForm();
     }
 }

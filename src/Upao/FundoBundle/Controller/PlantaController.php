@@ -62,7 +62,7 @@ class PlantaController extends Controller
                 $celdas = array();
                 foreach ($valores as $valor) {
                     $celdas[] = array(
-                        'columna' => isset($valor[0]) ? Planta::toNumber(strtolower($valor[0])) : 0,
+                        'columna' => isset($valor[0]) ? Util::toNumber(strtolower($valor[0])) : 0,
                         'fila' => isset($valor[1]) ? $valor[1] : 0,
                     );
                 }

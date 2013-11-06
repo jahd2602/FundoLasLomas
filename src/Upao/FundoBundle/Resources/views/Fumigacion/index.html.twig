@@ -1,43 +1,57 @@
 {% extends '::base.html.twig' %}
 
 {% block body -%}
-    <h1>Fumigacion list</h1>
 
-    <table class="records_list">
-        <thead>
-            <tr>
-                <th>Descripcion</th>
-                <th>Observacion</th>
-                <th>Id</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for entity in entities %}
-            <tr>
-                <td><a href="{{ path('fumigacion_show', { 'id': entity.id }) }}">{{ entity.descripcion }}</a></td>
-                <td>{{ entity.observacion }}</td>
-                <td>{{ entity.id }}</td>
-                <td>
-                <ul>
-                    <li>
-                        <a href="{{ path('fumigacion_show', { 'id': entity.id }) }}">show</a>
-                    </li>
-                    <li>
-                        <a href="{{ path('fumigacion_edit', { 'id': entity.id }) }}">edit</a>
-                    </li>
-                </ul>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <h3>Registro de Fumigaciones</h3>
+    <div class="tab-pane" id="datatable">
+        <section class="panel">
+            <div class="table-responsive">
+                <table class="table table-striped m-b-none" data-href="{{ path('fumigacion') }}" data-ride="datatables">
+                    <thead>
+                    <tr>
+                        <th data-property="fecha" width="30%">Fecha</th>
+                        <th data-property="empleado" width="40%">Empleado</th>
+                        <th data-property="descripcion" width="10%">Descripción</th>
+                        <th data-property="observacion" width="10%">Observación</th>
+                        <th data-property="id" width="10%">Detalle</th>
 
-        <ul>
-        <li>
-            <a href="{{ path('fumigacion_new') }}">
-                Create a new entry
-            </a>
-        </li>
-    </ul>
-    {% endblock %}
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+
+{% endblock %}
+{% block javascript %}
+    <script>
+        $(document).ready(function () {
+
+            $('[data-ride="datatables"]').each(function () {
+                var $element = $(this);
+                var oTable = $(this).dataTable({
+                    "bProcessing": true,
+                    "sAjaxDataProp": "results",
+                    "sAjaxSource": $element.data('href'),
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                        {"mData": "fecha"},
+                        {"mData": "empleado"},
+                        {"mData": "descripcion"},
+                        {"mData": "observacion"},
+                        {"mData": "id"}
+                    ],
+                    fnStateLoad: function () {
+                        console.log('cargo');
+                    }
+                });
+            });
+        })
+    </script>
+
+{% endblock %}

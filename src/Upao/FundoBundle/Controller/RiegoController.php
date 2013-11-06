@@ -2,33 +2,32 @@
 
 namespace Upao\FundoBundle\Controller;
 
-use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-use Upao\FundoBundle\Entity\EstadoAmbiente;
-use Upao\FundoBundle\Form\EstadoAmbienteType;
+use Upao\FundoBundle\Entity\Riego;
+use Upao\FundoBundle\Form\RiegoType;
 use Upao\FundoBundle\Util\Util;
 
 /**
- * EstadoAmbiente controller.
+ * Riego controller.
  *
  */
-class EstadoAmbienteController extends Controller
+class RiegoController extends Controller
 {
 
     /**
-     * Lists all EstadoAmbiente entities.
+     * Lists all Riego entities.
      *
      */
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $request= $this->getRequest();
+        $request=$this->getRequest();
 
-        $entities = $em->getRepository('UpaoFundoBundle:EstadoAmbiente')
-            ->createQueryBuilder('e')
-            ->orderBy('e.fecha', 'DESC')
+        $entities = $em->getRepository('UpaoFundoBundle:Riego')
+            ->createQueryBuilder('r')
+            ->orderBy('r.fecha', 'DESC')
             ->getQuery()
             ->getResult();
 
@@ -36,15 +35,12 @@ class EstadoAmbienteController extends Controller
 
         if ($request->isXmlHttpRequest()) {
 
-            foreach ($entities as $estadoAmbiente) {
+            foreach ($entities as $riego) {
                 $data['results'][] = array(
-                    'fecha' => $estadoAmbiente->getFecha()->format('Y-m-d'),
-                    'humedad' => $estadoAmbiente->getHumedad(),
-                    'presion_ambiental' => $estadoAmbiente->getPresionAmbiental(),
-                    'temperatura' => $estadoAmbiente->getTemperatura(),
-                //    'observaciones' => Util::truncate($estadoAmbiente->getObservaciones(),50),
-                    'observaciones' => $estadoAmbiente->getObservaciones(),
-                    'id' => $estadoAmbiente->getId(),
+                    'fecha' => $riego->getFecha()->format('Y-m-d'),
+                    'empleado' => $riego->getIdEmpleado()->getNombre(),
+                    'observacion' => Util::truncate($riego->getObservacion(),50),
+                    'id' => $riego->getId(),
                 );
             }
 
@@ -54,18 +50,19 @@ class EstadoAmbienteController extends Controller
             ));
 
         } else {
-            return $this->render('UpaoFundoBundle:EstadoAmbiente:index.html.twig', array(
+            return $this->render('UpaoFundoBundle:Riego:index.html.twig', array(
                 'entities' => $entities,
             ));
         }
+
     }
     /**
-     * Creates a new EstadoAmbiente entity.
+     * Creates a new Riego entity.
      *
      */
     public function createAction(Request $request)
     {
-        $entity = new EstadoAmbiente();
+        $entity = new Riego();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
@@ -74,26 +71,26 @@ class EstadoAmbienteController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('estadoambiente_show', array('id' => $entity->getId())));
+            return $this->redirect($this->generateUrl('riego_show', array('id' => $entity->getId())));
         }
 
-        return $this->render('UpaoFundoBundle:EstadoAmbiente:new.html.twig', array(
+        return $this->render('UpaoFundoBundle:Riego:new.html.twig', array(
             'entity' => $entity,
             'form'   => $form->createView(),
         ));
     }
 
     /**
-    * Creates a form to create a EstadoAmbiente entity.
+    * Creates a form to create a Riego entity.
     *
-    * @param EstadoAmbiente $entity The entity
+    * @param Riego $entity The entity
     *
     * @return \Symfony\Component\Form\Form The form
     */
-    private function createCreateForm(EstadoAmbiente $entity)
+    private function createCreateForm(Riego $entity)
     {
-        $form = $this->createForm(new EstadoAmbienteType(), $entity, array(
-            'action' => $this->generateUrl('estadoambiente_create'),
+        $form = $this->createForm(new RiegoType(), $entity, array(
+            'action' => $this->generateUrl('riego_create'),
             'method' => 'POST',
         ));
 
@@ -103,59 +100,59 @@ class EstadoAmbienteController extends Controller
     }
 
     /**
-     * Displays a form to create a new EstadoAmbiente entity.
+     * Displays a form to create a new Riego entity.
      *
      */
     public function newAction()
     {
-        $entity = new EstadoAmbiente();
+        $entity = new Riego();
         $form   = $this->createCreateForm($entity);
 
-        return $this->render('UpaoFundoBundle:EstadoAmbiente:new.html.twig', array(
+        return $this->render('UpaoFundoBundle:Riego:new.html.twig', array(
             'entity' => $entity,
             'form'   => $form->createView(),
         ));
     }
 
     /**
-     * Finds and displays a EstadoAmbiente entity.
+     * Finds and displays a Riego entity.
      *
      */
     public function showAction($id)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('UpaoFundoBundle:EstadoAmbiente')->find($id);
+        $entity = $em->getRepository('UpaoFundoBundle:Riego')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find EstadoAmbiente entity.');
+            throw $this->createNotFoundException('Unable to find Riego entity.');
         }
 
         $deleteForm = $this->createDeleteForm($id);
 
-        return $this->render('UpaoFundoBundle:EstadoAmbiente:show.html.twig', array(
+        return $this->render('UpaoFundoBundle:Riego:show.html.twig', array(
             'entity'      => $entity,
             'delete_form' => $deleteForm->createView(),        ));
     }
 
     /**
-     * Displays a form to edit an existing EstadoAmbiente entity.
+     * Displays a form to edit an existing Riego entity.
      *
      */
     public function editAction($id)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('UpaoFundoBundle:EstadoAmbiente')->find($id);
+        $entity = $em->getRepository('UpaoFundoBundle:Riego')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find EstadoAmbiente entity.');
+            throw $this->createNotFoundException('Unable to find Riego entity.');
         }
 
         $editForm = $this->createEditForm($entity);
         $deleteForm = $this->createDeleteForm($id);
 
-        return $this->render('UpaoFundoBundle:EstadoAmbiente:edit.html.twig', array(
+        return $this->render('UpaoFundoBundle:Riego:edit.html.twig', array(
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
@@ -163,16 +160,16 @@ class EstadoAmbienteController extends Controller
     }
 
     /**
-    * Creates a form to edit a EstadoAmbiente entity.
+    * Creates a form to edit a Riego entity.
     *
-    * @param EstadoAmbiente $entity The entity
+    * @param Riego $entity The entity
     *
     * @return \Symfony\Component\Form\Form The form
     */
-    private function createEditForm(EstadoAmbiente $entity)
+    private function createEditForm(Riego $entity)
     {
-        $form = $this->createForm(new EstadoAmbienteType(), $entity, array(
-            'action' => $this->generateUrl('estadoambiente_update', array('id' => $entity->getId())),
+        $form = $this->createForm(new RiegoType(), $entity, array(
+            'action' => $this->generateUrl('riego_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
 
@@ -181,17 +178,17 @@ class EstadoAmbienteController extends Controller
         return $form;
     }
     /**
-     * Edits an existing EstadoAmbiente entity.
+     * Edits an existing Riego entity.
      *
      */
     public function updateAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('UpaoFundoBundle:EstadoAmbiente')->find($id);
+        $entity = $em->getRepository('UpaoFundoBundle:Riego')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find EstadoAmbiente entity.');
+            throw $this->createNotFoundException('Unable to find Riego entity.');
         }
 
         $deleteForm = $this->createDeleteForm($id);
@@ -201,17 +198,17 @@ class EstadoAmbienteController extends Controller
         if ($editForm->isValid()) {
             $em->flush();
 
-            return $this->redirect($this->generateUrl('estadoambiente_edit', array('id' => $id)));
+            return $this->redirect($this->generateUrl('riego_edit', array('id' => $id)));
         }
 
-        return $this->render('UpaoFundoBundle:EstadoAmbiente:edit.html.twig', array(
+        return $this->render('UpaoFundoBundle:Riego:edit.html.twig', array(
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
     /**
-     * Deletes a EstadoAmbiente entity.
+     * Deletes a Riego entity.
      *
      */
     public function deleteAction(Request $request, $id)
@@ -221,21 +218,21 @@ class EstadoAmbienteController extends Controller
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('UpaoFundoBundle:EstadoAmbiente')->find($id);
+            $entity = $em->getRepository('UpaoFundoBundle:Riego')->find($id);
 
             if (!$entity) {
-                throw $this->createNotFoundException('Unable to find EstadoAmbiente entity.');
+                throw $this->createNotFoundException('Unable to find Riego entity.');
             }
 
             $em->remove($entity);
             $em->flush();
         }
 
-        return $this->redirect($this->generateUrl('estadoambiente'));
+        return $this->redirect($this->generateUrl('riego'));
     }
 
     /**
-     * Creates a form to delete a EstadoAmbiente entity by id.
+     * Creates a form to delete a Riego entity by id.
      *
      * @param mixed $id The entity id
      *
@@ -244,7 +241,7 @@ class EstadoAmbienteController extends Controller
     private function createDeleteForm($id)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('estadoambiente_delete', array('id' => $id)))
+            ->setAction($this->generateUrl('riego_delete', array('id' => $id)))
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()

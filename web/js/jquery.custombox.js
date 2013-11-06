@@ -35,7 +35,7 @@
             customClass:    null,           // Custom class to modal.
             width:          null,           // Set a fixed total width.
             height:         null,           // Set a fixed total height.
-            effect:         null,       // fadein | slide | newspaper | fall | sidefall | blur | flip | sign | superscaled | slit | rotate | letmein | makeway | slip | blur.
+            effect:         'fadein',       // fadein | slide | newspaper | fall | sidefall | blur | flip | sign | superscaled | slit | rotate | letmein | makeway | slip | blur.
             position:       null,           // Only with effects: slide, flip and rotate. (top, right, bottom, left and center) | (vertical or horizontal) and output position sseparated by commas. Ex: 'top, bottom'.
             speed:          600,            // Sets the speed of the transitions, in milliseconds.
             open:           null,           // Callback that fires right before begins to open.

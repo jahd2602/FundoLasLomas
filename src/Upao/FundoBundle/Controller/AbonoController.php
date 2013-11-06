@@ -5,8 +5,10 @@ namespace Upao\FundoBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
+use Symfony\Component\HttpFoundation\Response;
 use Upao\FundoBundle\Entity\Abono;
 use Upao\FundoBundle\Form\AbonoType;
+use Upao\FundoBundle\Util\Util;
 
 /**
  * Abono controller.
@@ -22,15 +24,45 @@ class AbonoController extends Controller
     public function indexAction()
     {
 
-
+        $request = $this->getRequest();
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('UpaoFundoBundle:Abono')->findAll();
 
-        return $this->render('UpaoFundoBundle:Abono:index.html.twig', array(
-            'entities' => $entities,
-        ));
+        $entities = $em->getRepository('UpaoFundoBundle:Abono')
+            ->createQueryBuilder('a')
+            ->orderBy('a.fecha', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+
+        $data = array();
+
+        if ($request->isXmlHttpRequest()) {
+
+            foreach ($entities as $abono) {
+                $data['results'][] = array(
+                    'fecha' => $abono->getFecha()->format('Y-m-d'),
+                    'empleado' => $abono->getIdEmpleado()->getNombre(),
+                    'descripcion' => Util::truncate($abono->getDescripcion(), 50),
+                    'observacion' => Util::truncate($abono->getObservacion(), 50),
+                    'id' => $abono->getId(),
+                );
+            }
+
+
+            return new Response(json_encode($data), 200, array(
+                'Content-Type' => 'application/json'
+            ));
+
+        } else {
+
+            return $this->render('UpaoFundoBundle:Abono:index.html.twig', array(
+                'entities' => $entities,
+            ));
+        }
+
     }
+
     /**
      * Creates a new Abono entity.
      *
@@ -51,17 +83,17 @@ class AbonoController extends Controller
 
         return $this->render('UpaoFundoBundle:Abono:new.html.twig', array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
     /**
-    * Creates a form to create a Abono entity.
-    *
-    * @param Abono $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to create a Abono entity.
+     *
+     * @param Abono $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createCreateForm(Abono $entity)
     {
         $form = $this->createForm(new AbonoType(), $entity, array(
@@ -81,11 +113,11 @@ class AbonoController extends Controller
     public function newAction()
     {
         $entity = new Abono();
-        $form   = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($entity);
 
         return $this->render('UpaoFundoBundle:Abono:new.html.twig', array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
@@ -106,8 +138,8 @@ class AbonoController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render('UpaoFundoBundle:Abono:show.html.twig', array(
-            'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),        ));
+            'entity' => $entity,
+            'delete_form' => $deleteForm->createView(),));
     }
 
     /**
@@ -128,19 +160,19 @@ class AbonoController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render('UpaoFundoBundle:Abono:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
 
     /**
-    * Creates a form to edit a Abono entity.
-    *
-    * @param Abono $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to edit a Abono entity.
+     *
+     * @param Abono $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createEditForm(Abono $entity)
     {
         $form = $this->createForm(new AbonoType(), $entity, array(
@@ -152,6 +184,7 @@ class AbonoController extends Controller
 
         return $form;
     }
+
     /**
      * Edits an existing Abono entity.
      *
@@ -177,11 +210,12 @@ class AbonoController extends Controller
         }
 
         return $this->render('UpaoFundoBundle:Abono:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
+
     /**
      * Deletes a Abono entity.
      *
@@ -219,7 +253,6 @@ class AbonoController extends Controller
             ->setAction($this->generateUrl('abono_delete', array('id' => $id)))
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
-        ;
+            ->getForm();
     }
 }

@@ -1,0 +1,30 @@
+riego:
+    pattern:  /
+    defaults: { _controller: "UpaoFundoBundle:Riego:index" }
+
+riego_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "UpaoFundoBundle:Riego:show" }
+
+riego_new:
+    pattern:  /new
+    defaults: { _controller: "UpaoFundoBundle:Riego:new" }
+
+riego_create:
+    pattern:  /create
+    defaults: { _controller: "UpaoFundoBundle:Riego:create" }
+    requirements: { _method: post }
+
+riego_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "UpaoFundoBundle:Riego:edit" }
+
+riego_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "UpaoFundoBundle:Riego:update" }
+    requirements: { _method: post|put }
+
+riego_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "UpaoFundoBundle:Riego:delete" }
+    requirements: { _method: post|delete }

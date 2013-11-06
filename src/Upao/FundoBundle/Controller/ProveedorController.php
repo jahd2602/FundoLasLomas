@@ -2,6 +2,7 @@
 
 namespace Upao\FundoBundle\Controller;
 
+use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -22,13 +23,41 @@ class ProveedorController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
+        $request = $this->getRequest();
 
-        $entities = $em->getRepository('UpaoFundoBundle:Proveedor')->findAll();
+        $entities = $em->getRepository('UpaoFundoBundle:Proveedor')
+            ->createQueryBuilder('p')
+            ->orderBy('p.nombre', 'ASC')
+            ->getQuery()
+            ->getResult();
 
-        return $this->render('UpaoFundoBundle:Proveedor:index.html.twig', array(
-            'entities' => $entities,
-        ));
+
+        $data = array();
+
+        if ($request->isXmlHttpRequest()) {
+
+            foreach ($entities as $proveedor) {
+                $data['results'][] = array(
+                    'nombre' => $proveedor->getNombre(),
+                    'ruc' => $proveedor->getRuc(),
+                    'telefono' => $proveedor->getTelefono(),
+                    'contacto' => $proveedor->getContacto(),
+                    'id' => $proveedor->getId(),
+                );
+            }
+
+
+            return new \Symfony\Component\HttpFoundation\Response(json_encode($data), 200, array(
+                'Content-Type' => 'application/json'
+            ));
+
+        } else {
+            return $this->render('UpaoFundoBundle:Proveedor:index.html.twig', array(
+                'entities' => $entities,
+            ));
+        }
     }
+
     /**
      * Creates a new Proveedor entity.
      *
@@ -49,17 +78,17 @@ class ProveedorController extends Controller
 
         return $this->render('UpaoFundoBundle:Proveedor:new.html.twig', array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
     /**
-    * Creates a form to create a Proveedor entity.
-    *
-    * @param Proveedor $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to create a Proveedor entity.
+     *
+     * @param Proveedor $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createCreateForm(Proveedor $entity)
     {
         $form = $this->createForm(new ProveedorType(), $entity, array(
@@ -79,11 +108,11 @@ class ProveedorController extends Controller
     public function newAction()
     {
         $entity = new Proveedor();
-        $form   = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($entity);
 
         return $this->render('UpaoFundoBundle:Proveedor:new.html.twig', array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
@@ -104,8 +133,8 @@ class ProveedorController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render('UpaoFundoBundle:Proveedor:show.html.twig', array(
-            'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),        ));
+            'entity' => $entity,
+            'delete_form' => $deleteForm->createView(),));
     }
 
     /**
@@ -126,19 +155,19 @@ class ProveedorController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render('UpaoFundoBundle:Proveedor:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
 
     /**
-    * Creates a form to edit a Proveedor entity.
-    *
-    * @param Proveedor $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to edit a Proveedor entity.
+     *
+     * @param Proveedor $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createEditForm(Proveedor $entity)
     {
         $form = $this->createForm(new ProveedorType(), $entity, array(
@@ -150,6 +179,7 @@ class ProveedorController extends Controller
 
         return $form;
     }
+
     /**
      * Edits an existing Proveedor entity.
      *
@@ -175,11 +205,12 @@ class ProveedorController extends Controller
         }
 
         return $this->render('UpaoFundoBundle:Proveedor:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
+
     /**
      * Deletes a Proveedor entity.
      *
@@ -217,7 +248,6 @@ class ProveedorController extends Controller
             ->setAction($this->generateUrl('proveedor_delete', array('id' => $id)))
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
-        ;
+            ->getForm();
     }
 }

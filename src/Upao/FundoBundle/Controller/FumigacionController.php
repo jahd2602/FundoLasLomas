@@ -2,11 +2,13 @@
 
 namespace Upao\FundoBundle\Controller;
 
+use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Upao\FundoBundle\Entity\Fumigacion;
 use Upao\FundoBundle\Form\FumigacionType;
+use Upao\FundoBundle\Util\Util;
 
 /**
  * Fumigacion controller.
@@ -22,12 +24,39 @@ class FumigacionController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
+        $request = $this->getRequest();
+        $entities = $em->getRepository('UpaoFundoBundle:Fumigacion')
+            ->createQueryBuilder('f')
+            ->orderBy('f.fecha', 'DESC')
+            ->getQuery()
+            ->getResult();
 
-        $entities = $em->getRepository('UpaoFundoBundle:Fumigacion')->findAll();
 
-        return $this->render('UpaoFundoBundle:Fumigacion:index.html.twig', array(
-            'entities' => $entities,
-        ));
+        $data = array();
+
+        if ($request->isXmlHttpRequest()) {
+
+            foreach ($entities as $fumigacion) {
+                $data['results'][] = array(
+                    'fecha' => $fumigacion->getFecha()->format('Y-m-d'),
+                    'empleado' => $fumigacion->getIdEmpleado()->getNombre(),
+                    'descripcion' => Util::truncate($fumigacion->getDescripcion(),50),
+                    'observacion' => Util::truncate($fumigacion->getObservacion(),50),
+                    'id' => $fumigacion->getId(),
+                );
+            }
+
+
+            return new \Symfony\Component\HttpFoundation\Response(json_encode($data), 200, array(
+                'Content-Type' => 'application/json'
+            ));
+
+        } else {
+            return $this->render('UpaoFundoBundle:Fumigacion:index.html.twig', array(
+                'entities' => $entities,
+            ));
+        }
+
     }
     /**
      * Creates a new Fumigacion entity.

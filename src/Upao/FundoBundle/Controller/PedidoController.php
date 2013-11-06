@@ -2,6 +2,7 @@
 
 namespace Upao\FundoBundle\Controller;
 
+use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -22,12 +23,39 @@ class PedidoController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
+        $request= $this->getRequest();
 
-        $entities = $em->getRepository('UpaoFundoBundle:Pedido')->findAll();
+        $entities = $em->getRepository('UpaoFundoBundle:Pedido')
+            ->createQueryBuilder('p')
+            ->orderBy('p.fecha', 'DESC')
+            ->getQuery()
+            ->getResult();
 
-        return $this->render('UpaoFundoBundle:Pedido:index.html.twig', array(
-            'entities' => $entities,
-        ));
+
+        $data = array();
+
+        if ($request->isXmlHttpRequest()) {
+
+            foreach ($entities as $pedido) {
+                $data['results'][] = array(
+                    'fecha' => $pedido->getFecha()->format('Y-m-d'),
+                    'proveedor' => $pedido->getIdProveedor()->getNombre(),
+                    'costo' => $pedido->getCosto(),
+                    'id' => $pedido->getId(),
+                );
+            }
+
+
+            return new \Symfony\Component\HttpFoundation\Response(json_encode($data), 200, array(
+                'Content-Type' => 'application/json'
+            ));
+
+        } else {
+            return $this->render('UpaoFundoBundle:Pedido:index.html.twig', array(
+                'entities' => $entities,
+            ));
+        }
+
     }
     /**
      * Creates a new Pedido entity.

@@ -2,11 +2,13 @@
 
 namespace Upao\FundoBundle\Controller;
 
+use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Upao\FundoBundle\Entity\Problema;
 use Upao\FundoBundle\Form\ProblemaType;
+use Upao\FundoBundle\Util\Util;
 
 /**
  * Problema controller.
@@ -22,13 +24,43 @@ class ProblemaController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
+        $request = $this->getRequest();
 
-        $entities = $em->getRepository('UpaoFundoBundle:Problema')->findAll();
+        $entities = $em->getRepository('UpaoFundoBundle:Problema')
+            ->createQueryBuilder('p')
+            ->orderBy('p.fecha', 'DESC')
+            ->getQuery()
+            ->getResult();
 
-        return $this->render('UpaoFundoBundle:Problema:index.html.twig', array(
-            'entities' => $entities,
-        ));
+
+        $data = array();
+
+        if ($request->isXmlHttpRequest()) {
+
+            foreach ($entities as $problema) {
+                $data['results'][] = array(
+                    'fecha' => $problema->getFecha()->format('Y-m-d'),
+                    'descripcion' => Util::truncate($problema->getDescripcion(), 50),
+                    'planta' => $problema->getIdPlanta()->getCodigo(),
+                    'resuelto' => $problema->getResuelto() ? 'SI' : 'NO',
+                    'id' => $problema->getId(),
+                );
+            }
+
+
+            return new \Symfony\Component\HttpFoundation\Response(json_encode($data), 200, array(
+                'Content-Type' => 'application/json'
+            ));
+
+        } else {
+            return $this->render('UpaoFundoBundle:Problema:index.html.twig', array(
+                'entities' => $entities,
+            ));
+        }
+
+
     }
+
     /**
      * Creates a new Problema entity.
      *
@@ -49,17 +81,17 @@ class ProblemaController extends Controller
 
         return $this->render('UpaoFundoBundle:Problema:new.html.twig', array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
     /**
-    * Creates a form to create a Problema entity.
-    *
-    * @param Problema $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to create a Problema entity.
+     *
+     * @param Problema $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createCreateForm(Problema $entity)
     {
         $form = $this->createForm(new ProblemaType(), $entity, array(
@@ -79,11 +111,11 @@ class ProblemaController extends Controller
     public function newAction()
     {
         $entity = new Problema();
-        $form   = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($entity);
 
         return $this->render('UpaoFundoBundle:Problema:new.html.twig', array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
@@ -104,8 +136,8 @@ class ProblemaController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render('UpaoFundoBundle:Problema:show.html.twig', array(
-            'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),        ));
+            'entity' => $entity,
+            'delete_form' => $deleteForm->createView(),));
     }
 
     /**
@@ -126,19 +158,19 @@ class ProblemaController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render('UpaoFundoBundle:Problema:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
 
     /**
-    * Creates a form to edit a Problema entity.
-    *
-    * @param Problema $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to edit a Problema entity.
+     *
+     * @param Problema $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createEditForm(Problema $entity)
     {
         $form = $this->createForm(new ProblemaType(), $entity, array(
@@ -150,6 +182,7 @@ class ProblemaController extends Controller
 
         return $form;
     }
+
     /**
      * Edits an existing Problema entity.
      *
@@ -175,11 +208,12 @@ class ProblemaController extends Controller
         }
 
         return $this->render('UpaoFundoBundle:Problema:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
+
     /**
      * Deletes a Problema entity.
      *
@@ -217,7 +251,6 @@ class ProblemaController extends Controller
             ->setAction($this->generateUrl('problema_delete', array('id' => $id)))
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
-        ;
+            ->getForm();
     }
 }

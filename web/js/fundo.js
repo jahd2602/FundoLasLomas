@@ -16,7 +16,7 @@ $(document).ready(function () {
 
         element = typeof element === 'undefined' ? 'body' : element;
 
-        $('select,.select', element).selectize({
+        $('select', element).selectize({
             delimiter: ',',
             create: false,
             persist: false,
@@ -235,6 +235,7 @@ $(document).ready(function () {
         event.preventDefault();
 
     });
+
 
 
     $(document).on('click.modal', '[rel="modal:close"]', function (event) {

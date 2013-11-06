@@ -2,6 +2,7 @@
 
 namespace Upao\FundoBundle\Controller;
 
+use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -22,12 +23,39 @@ class EmpleadoController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
+        $request= $this->getRequest();
 
-        $entities = $em->getRepository('UpaoFundoBundle:Empleado')->findAll();
+        $entities = $em->getRepository('UpaoFundoBundle:Empleado')
+            ->createQueryBuilder('e')
+            ->orderBy('e.nombre', 'ASC')
+            ->getQuery()
+            ->getResult();
 
-        return $this->render('UpaoFundoBundle:Empleado:index.html.twig', array(
-            'entities' => $entities,
-        ));
+
+        $data = array();
+
+        if ($request->isXmlHttpRequest()) {
+
+            foreach ($entities as $empleado) {
+                $data['results'][] = array(
+                    'nombre' => $empleado->getNombre(),
+                    'dni' => $empleado->getDni(),
+                    'telefono' => $empleado->getTelefono(),
+                    'id' => $empleado->getId(),
+                );
+            }
+
+
+            return new \Symfony\Component\HttpFoundation\Response(json_encode($data), 200, array(
+                'Content-Type' => 'application/json'
+            ));
+
+        } else {
+            return $this->render('UpaoFundoBundle:Empleado:index.html.twig', array(
+                'entities' => $entities,
+            ));
+        }
+
     }
     /**
      * Creates a new Empleado entity.

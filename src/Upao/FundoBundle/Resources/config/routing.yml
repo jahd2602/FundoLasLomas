@@ -72,3 +72,7 @@ venta:
     resource: "@UpaoFundoBundle/Resources/config/routing/venta.yml"
     prefix:   /venta
 
+riego:
+    resource: "@UpaoFundoBundle/Resources/config/routing/riego.yml"
+    prefix:   /riego
+

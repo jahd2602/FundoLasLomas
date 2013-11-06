@@ -1,47 +1,57 @@
 {% extends '::base.html.twig' %}
 
 {% block body -%}
-    <h1>Cosecha list</h1>
 
-    <table class="records_list">
-        <thead>
-            <tr>
-                <th>Totalkilos</th>
-                <th>Kilosdisponibles</th>
-                <th>Fecha</th>
-                <th>Observaciones</th>
-                <th>Id</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for entity in entities %}
-            <tr>
-                <td><a href="{{ path('cosecha_show', { 'id': entity.id }) }}">{{ entity.totalKilos }}</a></td>
-                <td>{{ entity.kilosDisponibles }}</td>
-                <td>{% if entity.fecha %}{{ entity.fecha|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{{ entity.observaciones }}</td>
-                <td>{{ entity.id }}</td>
-                <td>
-                <ul>
-                    <li>
-                        <a href="{{ path('cosecha_show', { 'id': entity.id }) }}">show</a>
-                    </li>
-                    <li>
-                        <a href="{{ path('cosecha_edit', { 'id': entity.id }) }}">edit</a>
-                    </li>
-                </ul>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <h3>Registro de Cosechas</h3>
+    <div class="tab-pane" id="datatable">
+        <section class="panel">
+            <div class="table-responsive">
+                <table class="table table-striped m-b-none" data-href="{{ path('cosecha') }}" data-ride="datatables">
+                    <thead>
+                    <tr>
+                        <th data-property="fecha" width="20%">Fecha</th>
+                        <th data-property="total_kilos" width="10%">Total Kg.</th>
+                        <th data-property="kilos_disponibles" width="10%">Kg. Disponibles</th>
+                        <th data-property="observaciones" width="40%">Observaciones</th>
+                        <th data-property="id" width="10%">Detalle</th>
 
-        <ul>
-        <li>
-            <a href="{{ path('cosecha_new') }}">
-                Create a new entry
-            </a>
-        </li>
-    </ul>
-    {% endblock %}
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+
+{% endblock %}
+{% block javascript %}
+    <script>
+        $(document).ready(function () {
+
+            $('[data-ride="datatables"]').each(function () {
+                var $element = $(this);
+                var oTable = $(this).dataTable({
+                    "bProcessing": true,
+                    "sAjaxDataProp": "results",
+                    "sAjaxSource": $element.data('href'),
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                        {"mData": "fecha"},
+                        {"mData": "total_kilos"},
+                        {"mData": "kilos_disponibles"},
+                        {"mData": "observaciones"},
+                        {"mData": "id"}
+                    ],
+                    fnStateLoad: function () {
+                        console.log('cargo');
+                    }
+                });
+            });
+        })
+    </script>
+
+{% endblock %}

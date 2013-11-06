@@ -2,6 +2,7 @@
 
 namespace Upao\FundoBundle\Controller;
 
+use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -22,13 +23,40 @@ class TipoPlantaController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
+        $request = $this->getRequest();
 
-        $entities = $em->getRepository('UpaoFundoBundle:TipoPlanta')->findAll();
+        $entities = $em->getRepository('UpaoFundoBundle:TipoPlanta')
+            ->createQueryBuilder('t')
+            ->orderBy('t.nombre', 'ASC')
+            ->getQuery()
+            ->getResult();
 
-        return $this->render('UpaoFundoBundle:TipoPlanta:index.html.twig', array(
-            'entities' => $entities,
-        ));
+
+        $data = array();
+
+        if ($request->isXmlHttpRequest()) {
+
+            foreach ($entities as $tipoPlanta) {
+                $data['results'][] = array(
+                    'nombre' => $tipoPlanta->getNombre(),
+                    'descripcion' => $tipoPlanta->getDescripcion(),
+                    'id' => $tipoPlanta->getId(),
+                );
+            }
+
+
+            return new \Symfony\Component\HttpFoundation\Response(json_encode($data), 200, array(
+                'Content-Type' => 'application/json'
+            ));
+
+        } else {
+            return $this->render('UpaoFundoBundle:TipoPlanta:index.html.twig', array(
+                'entities' => $entities,
+            ));
+        }
+
     }
+
     /**
      * Creates a new TipoPlanta entity.
      *
@@ -49,17 +77,17 @@ class TipoPlantaController extends Controller
 
         return $this->render('UpaoFundoBundle:TipoPlanta:new.html.twig', array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
     /**
-    * Creates a form to create a TipoPlanta entity.
-    *
-    * @param TipoPlanta $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to create a TipoPlanta entity.
+     *
+     * @param TipoPlanta $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createCreateForm(TipoPlanta $entity)
     {
         $form = $this->createForm(new TipoPlantaType(), $entity, array(
@@ -79,11 +107,11 @@ class TipoPlantaController extends Controller
     public function newAction()
     {
         $entity = new TipoPlanta();
-        $form   = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($entity);
 
         return $this->render('UpaoFundoBundle:TipoPlanta:new.html.twig', array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
@@ -104,8 +132,8 @@ class TipoPlantaController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render('UpaoFundoBundle:TipoPlanta:show.html.twig', array(
-            'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),        ));
+            'entity' => $entity,
+            'delete_form' => $deleteForm->createView(),));
     }
 
     /**
@@ -126,19 +154,19 @@ class TipoPlantaController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render('UpaoFundoBundle:TipoPlanta:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
 
     /**
-    * Creates a form to edit a TipoPlanta entity.
-    *
-    * @param TipoPlanta $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to edit a TipoPlanta entity.
+     *
+     * @param TipoPlanta $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createEditForm(TipoPlanta $entity)
     {
         $form = $this->createForm(new TipoPlantaType(), $entity, array(
@@ -150,6 +178,7 @@ class TipoPlantaController extends Controller
 
         return $form;
     }
+
     /**
      * Edits an existing TipoPlanta entity.
      *
@@ -175,11 +204,12 @@ class TipoPlantaController extends Controller
         }
 
         return $this->render('UpaoFundoBundle:TipoPlanta:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
+
     /**
      * Deletes a TipoPlanta entity.
      *
@@ -217,7 +247,6 @@ class TipoPlantaController extends Controller
             ->setAction($this->generateUrl('tipoplanta_delete', array('id' => $id)))
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
-        ;
+            ->getForm();
     }
 }

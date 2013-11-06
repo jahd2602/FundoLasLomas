@@ -4,6 +4,7 @@ namespace Upao\FundoBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Upao\FundoBundle\Twig\FundoExtension;
+use Upao\FundoBundle\Util\Util;
 
 /**
  * Planta
@@ -66,45 +67,9 @@ class Planta
 
     public function getCodigo()
     {
-        return $this->toAlpha($this->columna) . $this->fila;
+        return Util::toAlpha($this->columna) . $this->fila;
     }
 
-    private function toAlpha($data)
-    {
-        $alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
-        $alpha_flip = array_flip($alphabet);
-        if ($data <= 25) {
-            return strtoupper($alphabet[$data]);
-        } elseif ($data > 25) {
-            $dividend = ($data + 1);
-            $alpha = '';
-            while ($dividend > 0) {
-                $modulo = ($dividend - 1) % 26;
-                $alpha = $alphabet[$modulo] . $alpha;
-                $dividend = floor((($dividend - $modulo) / 26));
-            }
-            return strtoupper($alpha);
-        }
-
-    }
-
-    static function toNumber($data)
-    {
-        $alphabet = array('a', 'b', 'c', 'd', 'e',
-            'f', 'g', 'h', 'i', 'j',
-            'k', 'l', 'm', 'n', 'o',
-            'p', 'q', 'r', 's', 't',
-            'u', 'v', 'w', 'x', 'y',
-            'z'
-        );
-        $alpha_flip = array_flip($alphabet);
-        $return_value = -1;
-        $length = strlen($data);
-        for ($i = 0; $i < $length; $i++) {
-            $return_value += ($alpha_flip[$data[$i]] + 1) * pow(26, ($length - $i - 1));
-        }
-        return $return_value + 1;
-    }
 
     /**
      * Set columna

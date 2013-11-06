@@ -1,45 +1,59 @@
 {% extends '::base.html.twig' %}
 
 {% block body -%}
-    <h1>Venta list</h1>
 
-    <table class="records_list">
-        <thead>
-            <tr>
-                <th>Kilosvendidos</th>
-                <th>Observaciones</th>
-                <th>Costo</th>
-                <th>Id</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for entity in entities %}
-            <tr>
-                <td><a href="{{ path('venta_show', { 'id': entity.id }) }}">{{ entity.kilosVendidos }}</a></td>
-                <td>{{ entity.observaciones }}</td>
-                <td>{{ entity.costo }}</td>
-                <td>{{ entity.id }}</td>
-                <td>
-                <ul>
-                    <li>
-                        <a href="{{ path('venta_show', { 'id': entity.id }) }}">show</a>
-                    </li>
-                    <li>
-                        <a href="{{ path('venta_edit', { 'id': entity.id }) }}">edit</a>
-                    </li>
-                </ul>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <h3>Ventas</h3>
+    <div class="tab-pane" id="datatable">
+        <section class="panel">
+            <div class="table-responsive">
+                <table class="table table-striped m-b-none" data-href="{{ path('venta') }}" data-ride="datatables">
+                    <thead>
+                    <tr>
+                        <th data-property="cosecha" width="30%">Cosecha</th>
+                        <th data-property="cliente" width="20%">Cliente</th>
+                        <th data-property="kilos_vendidos" width="10%">Kg. Vendidos</th>
+                        <th data-property="costo" width="10%">Costo</th>
+                        <th data-property="observaciones" width="10%">Observaciones</th>
+                        <th data-property="id" width="10%">Detalle</th>
 
-        <ul>
-        <li>
-            <a href="{{ path('venta_new') }}">
-                Create a new entry
-            </a>
-        </li>
-    </ul>
-    {% endblock %}
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+
+{% endblock %}
+{% block javascript %}
+    <script>
+        $(document).ready(function () {
+
+            $('[data-ride="datatables"]').each(function () {
+                var $element = $(this);
+                var oTable = $(this).dataTable({
+                    "bProcessing": true,
+                    "sAjaxDataProp": "results",
+                    "sAjaxSource": $element.data('href'),
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                        {"mData": "cosecha"},
+                        {"mData": "cliente"},
+                        {"mData": "kilos_vendidos"},
+                        {"mData": "costo"},
+                        {"mData": "observaciones"},
+                        {"mData": "id"}
+                    ],
+                    fnStateLoad: function () {
+                        console.log('cargo');
+                    }
+                });
+            });
+        })
+    </script>
+
+{% endblock %}
