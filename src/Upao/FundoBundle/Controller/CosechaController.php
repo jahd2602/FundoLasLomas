@@ -25,24 +25,28 @@ class CosechaController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
-        $entities = $em->getRepository('UpaoFundoBundle:Cosecha')
-            ->createQueryBuilder('c')
-            ->orderBy('c.fecha', 'DESC')
-            ->getQuery()
-            ->getResult();
-
 
         $data = array();
 
         if ($request->isXmlHttpRequest()) {
 
+            $entities = $em->getRepository('UpaoFundoBundle:Cosecha')
+                ->createQueryBuilder('c')
+                ->orderBy('c.fecha', 'DESC')
+                ->getQuery()
+                ->getResult();
+
+
             foreach ($entities as $cosecha) {
+                $url = $this->generateUrl('cosecha_show', array('id' => $cosecha->getId()));
+
+
                 $data['results'][] = array(
                     'fecha' => $cosecha->getFecha()->format('Y-m-d'),
-                    'total_kilos' => $cosecha->getTotalKilos(),
-                    'kilos_disponibles' => $cosecha->getKilosDisponibles(),
+                    'total_kilos' => $cosecha->getTotalKilos() .' Kg.',
+                    'kilos_disponibles' => $cosecha->getKilosDisponibles().' Kg.',
                     'observaciones' => Util::truncate($cosecha->getObservaciones(), 50),
-                    'id' => $cosecha->getId(),
+                    'id' => '<a href="'.$url.'" class="btn btn-info">Detalle</a>',
                 );
             }
 
@@ -52,9 +56,7 @@ class CosechaController extends Controller
             ));
 
         } else {
-            return $this->render('UpaoFundoBundle:Cosecha:index.html.twig', array(
-                'entities' => $entities,
-            ));
+            return $this->render('UpaoFundoBundle:Cosecha:index.html.twig');
         }
     }
 
@@ -130,11 +132,24 @@ class CosechaController extends Controller
             throw $this->createNotFoundException('Unable to find Cosecha entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
+
+        $plantas = array();
+        $cosechasPlanta = $em->getRepository('UpaoFundoBundle:CosechaPlanta')
+            ->findBy(
+                array(
+                    'idCosecha' => $entity->getId(),
+                ));
+
+        foreach ($cosechasPlanta as $cosechaPlanta) {
+            $plantas[] = $cosechaPlanta->getIdPlanta();
+        }
+
 
         return $this->render('UpaoFundoBundle:Cosecha:show.html.twig', array(
             'entity' => $entity,
-            'delete_form' => $deleteForm->createView(),));
+            'plantas' => $plantas,));
+
+
     }
 
     /**

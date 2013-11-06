@@ -10,6 +10,10 @@ problema_new:
     pattern:  /new
     defaults: { _controller: "UpaoFundoBundle:Problema:new" }
 
+problema_resolver:
+    pattern:  /resolver
+    defaults: { _controller: "UpaoFundoBundle:Problema:resolver" }
+
 problema_create:
     pattern:  /create
     defaults: { _controller: "UpaoFundoBundle:Problema:create" }

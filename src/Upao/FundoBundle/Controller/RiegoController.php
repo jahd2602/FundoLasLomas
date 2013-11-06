@@ -25,22 +25,26 @@ class RiegoController extends Controller
         $em = $this->getDoctrine()->getManager();
         $request=$this->getRequest();
 
-        $entities = $em->getRepository('UpaoFundoBundle:Riego')
-            ->createQueryBuilder('r')
-            ->orderBy('r.fecha', 'DESC')
-            ->getQuery()
-            ->getResult();
 
         $data = array();
 
         if ($request->isXmlHttpRequest()) {
 
+            $entities = $em->getRepository('UpaoFundoBundle:Riego')
+                ->createQueryBuilder('r')
+                ->orderBy('r.fecha', 'DESC')
+                ->getQuery()
+                ->getResult();
+
             foreach ($entities as $riego) {
+
+                $url = $this->generateUrl('riego_show', array('id' => $riego->getId()));
+
                 $data['results'][] = array(
                     'fecha' => $riego->getFecha()->format('Y-m-d'),
                     'empleado' => $riego->getIdEmpleado()->getNombre(),
                     'observacion' => Util::truncate($riego->getObservacion(),50),
-                    'id' => $riego->getId(),
+                    'id' => '<a href="'.$url.'" class="btn btn-info">Detalle</a>',
                 );
             }
 
@@ -50,9 +54,7 @@ class RiegoController extends Controller
             ));
 
         } else {
-            return $this->render('UpaoFundoBundle:Riego:index.html.twig', array(
-                'entities' => $entities,
-            ));
+            return $this->render('UpaoFundoBundle:Riego:index.html.twig');
         }
 
     }
@@ -128,11 +130,25 @@ class RiegoController extends Controller
             throw $this->createNotFoundException('Unable to find Riego entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
+
+        $plantas = array();
+        $riegosPlanta = $em->getRepository('UpaoFundoBundle:RiegoPlanta')
+            ->findBy(
+                array(
+                    'idRiego' => $entity->getId(),
+                ));
+
+        foreach ($riegosPlanta as $riegoPlanta) {
+            $plantas[] = $riegoPlanta->getIdPlanta();
+        }
+
 
         return $this->render('UpaoFundoBundle:Riego:show.html.twig', array(
             'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),        ));
+            'plantas' => $plantas,
+        ));
+
+
     }
 
     /**

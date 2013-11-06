@@ -1,44 +1,36 @@
 {% extends '::base.html.twig' %}
 
 {% block body -%}
-    <h1>Cosecha</h1>
+    <h3>Cosecha</h3>
 
-    <table class="record_properties">
+    <table class="record_properties table-striped">
         <tbody>
-            <tr>
-                <th>Totalkilos</th>
-                <td>{{ entity.totalKilos }}</td>
-            </tr>
-            <tr>
-                <th>Kilosdisponibles</th>
-                <td>{{ entity.kilosDisponibles }}</td>
-            </tr>
-            <tr>
-                <th>Fecha</th>
-                <td>{{ entity.fecha|date('Y-m-d H:i:s') }}</td>
-            </tr>
-            <tr>
-                <th>Observaciones</th>
-                <td>{{ entity.observaciones }}</td>
-            </tr>
-            <tr>
-                <th>Id</th>
-                <td>{{ entity.id }}</td>
-            </tr>
+        <tr>
+            <th>Fecha:</th>
+            <td>{{ entity.fecha|date('Y-m-d H:i') }}</td>
+        </tr>
+        <tr>
+            <th>Total Kilos:</th>
+            <td>{{ entity.totalKilos }}</td>
+        </tr>
+        <tr>
+            <th>Kilos Disponibles:</th>
+            <td>{{ entity.kilosDisponibles }}</td>
+        </tr>
+        <tr>
+            <th>Observaciones:</th>
+            <td>{{ entity.observaciones }}</td>
+        </tr>
         </tbody>
     </table>
 
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('cosecha') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>
-        <a href="{{ path('cosecha_edit', { 'id': entity.id }) }}">
-            Edit
-        </a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-</ul>
+
+    <a class="btn btn-primary" href="{{ path('cosecha') }}">
+        Regresar a la lista
+    </a>
+    <div class="clearfix"></div>
+
+
+    {{ render(controller('UpaoFundoBundle:Fundo:muestra', { 'plantas': plantas })) }}
+
 {% endblock %}

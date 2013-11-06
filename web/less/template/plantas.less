@@ -9,7 +9,9 @@
 #fundo-region .ui-selected {
   background-color: #F39814 !important;
   text-shadow: 0px 0px 5px rgba(0,0,0,0.5);
-
+  .tipo{
+    color: white !important;
+  }
   .codigo{
 
     color: white !important;
@@ -17,7 +19,8 @@
 
 }
 
-#fundo-region {
+#fundo-region,
+.fundo-region {
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -36,6 +39,12 @@
     overflow: hidden;
     position: relative;
     border-color: rgba(79, 70, 125, 0.34);
+
+    .tipo{
+      font-size: 12px;
+      color: rgba(0, 0, 0, 0.6);
+      .text-overflow();
+    }
 
     .codigo {
 

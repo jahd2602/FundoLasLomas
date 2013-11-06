@@ -25,23 +25,26 @@ class PedidoController extends Controller
         $em = $this->getDoctrine()->getManager();
         $request= $this->getRequest();
 
-        $entities = $em->getRepository('UpaoFundoBundle:Pedido')
-            ->createQueryBuilder('p')
-            ->orderBy('p.fecha', 'DESC')
-            ->getQuery()
-            ->getResult();
-
-
         $data = array();
 
         if ($request->isXmlHttpRequest()) {
 
+            $entities = $em->getRepository('UpaoFundoBundle:Pedido')
+                ->createQueryBuilder('p')
+                ->orderBy('p.fecha', 'DESC')
+                ->getQuery()
+                ->getResult();
+
+
             foreach ($entities as $pedido) {
+
+                $url = $this->generateUrl('pedido_show', array('id' => $pedido->getId()));
+
                 $data['results'][] = array(
-                    'fecha' => $pedido->getFecha()->format('Y-m-d'),
+                    'fecha' => $pedido->getFecha() ? $pedido->getFecha()->format('Y-m-d') : '',
                     'proveedor' => $pedido->getIdProveedor()->getNombre(),
-                    'costo' => $pedido->getCosto(),
-                    'id' => $pedido->getId(),
+                    'costo' => 'S/.'.$pedido->getCosto(),
+                    'id' => '<a href="'.$url.'" class="btn btn-modal btn-info">Detalle</a>',
                 );
             }
 
@@ -51,9 +54,7 @@ class PedidoController extends Controller
             ));
 
         } else {
-            return $this->render('UpaoFundoBundle:Pedido:index.html.twig', array(
-                'entities' => $entities,
-            ));
+            return $this->render('UpaoFundoBundle:Pedido:index.html.twig');
         }
 
     }

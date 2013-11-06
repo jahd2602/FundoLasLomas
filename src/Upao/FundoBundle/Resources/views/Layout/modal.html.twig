@@ -5,7 +5,7 @@
 
             <form  {% block enctype %}{% endblock %} class="form-horizontal form-accion"
                                                      action="{% block action %}{% endblock %}"
-                                                     method="post" role="form">
+                                                     method="{% block method %}post{% endblock %}" role="form">
                 <div class="modal-header">
                     <button type="button" class="close" rel="modal:close" aria-hidden="true">&times;</button>
                     <h4 class="modal-title">

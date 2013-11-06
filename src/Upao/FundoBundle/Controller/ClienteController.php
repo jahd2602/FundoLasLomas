@@ -24,24 +24,28 @@ class ClienteController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $request= $this->getRequest();
-        $entities = $em->getRepository('UpaoFundoBundle:Cliente')
-            ->createQueryBuilder('c')
-            ->orderBy('c.nombre', 'ASC')
-            ->getQuery()
-            ->getResult();
 
 
 
         $data = array();
 
         if ($request->isXmlHttpRequest()) {
+            $entities = $em->getRepository('UpaoFundoBundle:Cliente')
+                ->createQueryBuilder('c')
+                ->orderBy('c.nombre', 'ASC')
+                ->getQuery()
+                ->getResult();
 
             foreach ($entities as $cliente) {
+
+                $url = $this->generateUrl('cliente_edit', array('id' => $cliente->getId()));
+
+
                 $data['results'][] = array(
                     'nombre' => $cliente->getNombre(),
                     'direccion' => $cliente->getDireccion(),
                     'telefono' => $cliente->getTelefono(),
-                    'id' => $cliente->getId(),
+                    'id' => '<a href="'.$url.'" class="btn btn-modal btn-primary">Editar</a>',
                 );
             }
 
@@ -51,9 +55,7 @@ class ClienteController extends Controller
             ));
 
         } else {
-        return $this->render('UpaoFundoBundle:Cliente:index.html.twig', array(
-            'entities' => $entities,
-        ));
+        return $this->render('UpaoFundoBundle:Cliente:index.html.twig');
         }
     }
     /**
@@ -66,12 +68,46 @@ class ClienteController extends Controller
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
+        $session = $request->getSession();
+
+
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
 
-            return $this->redirect($this->generateUrl('cliente_show', array('id' => $entity->getId())));
+            try {
+
+                $em->persist($entity);
+                $em->flush();
+
+                $data = array(
+                    'status' => 200,
+                    'success' => true,
+                    'message' => 'Se registró el cliente correctamente'
+
+                );
+
+            } catch (\Exception $e) {
+                $data = array(
+                    'status' => 500,
+                    'error' => true,
+                    'message' => 'Error interno'
+
+                );
+            }
+
+            if ($request->isXmlHttpRequest()) {
+
+                return new \Symfony\Component\HttpFoundation\Response(json_encode($data), $data['status'], array(
+                    'Content-Type' => 'application/json'
+                ));
+
+            } else {
+                $session->getFlashBag()->add($data['status'] === 200 ? 'ok' : 'error', $data['message']);
+                return $this->redirect($this->generateUrl('cliente'));
+
+            }
+
+
         }
 
         return $this->render('UpaoFundoBundle:Cliente:new.html.twig', array(
@@ -94,7 +130,7 @@ class ClienteController extends Controller
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        //$form->add('submit', 'submit', array('label' => 'Create'));
 
         return $form;
     }
@@ -173,7 +209,7 @@ class ClienteController extends Controller
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        //$form->add('submit', 'submit', array('label' => 'Update'));
 
         return $form;
     }
@@ -195,11 +231,47 @@ class ClienteController extends Controller
         $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
 
-        if ($editForm->isValid()) {
-            $em->flush();
 
-            return $this->redirect($this->generateUrl('cliente_edit', array('id' => $id)));
+        $session = $request->getSession();
+
+
+        if ($editForm->isValid()) {
+
+            try {
+
+                $em->flush();
+
+                $data = array(
+                    'status' => 200,
+                    'success' => true,
+                    'message' => 'Se actualizo el cliente correctamente'
+
+                );
+
+            } catch (\Exception $e) {
+                $data = array(
+                    'status' => 500,
+                    'error' => true,
+                    'message' => 'Error interno'
+
+                );
+            }
+
+            if ($request->isXmlHttpRequest()) {
+
+                return new \Symfony\Component\HttpFoundation\Response(json_encode($data), $data['status'], array(
+                    'Content-Type' => 'application/json'
+                ));
+
+            } else {
+                $session->getFlashBag()->add($data['status'] === 200 ? 'ok' : 'error', $data['message']);
+                return $this->redirect($this->generateUrl('cliente'));
+
+            }
+
+
         }
+
 
         return $this->render('UpaoFundoBundle:Cliente:edit.html.twig', array(
             'entity'      => $entity,

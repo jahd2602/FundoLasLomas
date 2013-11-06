@@ -8,21 +8,39 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class VentaType extends AbstractType
 {
-        /**
+    /**
      * @param FormBuilderInterface $builder
      * @param array $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('idCliente', 'entity', array(
+                'label' => 'Cliente',
+                'label_attr' => array(
+                    'class' => 'control-label'
+                ),
+                'class' => 'UpaoFundoBundle:Cliente',
+                'empty_value' => 'Seleccione',
+                'property' => 'nombre',
+                'multiple' => false,
+                'required' => true,
+            ))
+            ->add('idCosecha', 'entity', array(
+                'label' => 'Cosecha',
+                'label_attr' => array(
+                    'class' => 'control-label'
+                ),
+                'class' => 'UpaoFundoBundle:Cosecha',
+                'empty_value' => 'Seleccione',
+                'multiple' => false,
+                'required' => true,
+            ))
             ->add('kilosVendidos')
             ->add('observaciones')
-            ->add('costo')
-            ->add('idCliente')
-            ->add('idCosecha')
-        ;
+            ->add('costo');
     }
-    
+
     /**
      * @param OptionsResolverInterface $resolver
      */

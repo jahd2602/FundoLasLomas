@@ -25,24 +25,26 @@ class FumigacionController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
-        $entities = $em->getRepository('UpaoFundoBundle:Fumigacion')
-            ->createQueryBuilder('f')
-            ->orderBy('f.fecha', 'DESC')
-            ->getQuery()
-            ->getResult();
-
 
         $data = array();
 
         if ($request->isXmlHttpRequest()) {
 
+            $entities = $em->getRepository('UpaoFundoBundle:Fumigacion')
+                ->createQueryBuilder('f')
+                ->orderBy('f.fecha', 'DESC')
+                ->getQuery()
+                ->getResult();
+
             foreach ($entities as $fumigacion) {
+                $url = $this->generateUrl('fumigacion_show', array('id' => $fumigacion->getId()));
+
                 $data['results'][] = array(
                     'fecha' => $fumigacion->getFecha()->format('Y-m-d'),
                     'empleado' => $fumigacion->getIdEmpleado()->getNombre(),
                     'descripcion' => Util::truncate($fumigacion->getDescripcion(),50),
                     'observacion' => Util::truncate($fumigacion->getObservacion(),50),
-                    'id' => $fumigacion->getId(),
+                    'id' => '<a href="'.$url.'" class="btn btn-info">Detalle</a>',
                 );
             }
 
@@ -52,9 +54,7 @@ class FumigacionController extends Controller
             ));
 
         } else {
-            return $this->render('UpaoFundoBundle:Fumigacion:index.html.twig', array(
-                'entities' => $entities,
-            ));
+            return $this->render('UpaoFundoBundle:Fumigacion:index.html.twig');
         }
 
     }
@@ -130,11 +130,23 @@ class FumigacionController extends Controller
             throw $this->createNotFoundException('Unable to find Fumigacion entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
+
+        $plantas = array();
+        $fumigacionesPlanta = $em->getRepository('UpaoFundoBundle:FumigacionPlanta')
+            ->findBy(
+                array(
+                    'idFumigacion' => $entity->getId(),
+                ));
+
+        foreach ($fumigacionesPlanta as $fumigacionPlanta) {
+            $plantas[] = $fumigacionPlanta->getIdPlanta();
+        }
+
 
         return $this->render('UpaoFundoBundle:Fumigacion:show.html.twig', array(
             'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),        ));
+            'plantas' => $plantas,       ));
+
     }
 
     /**

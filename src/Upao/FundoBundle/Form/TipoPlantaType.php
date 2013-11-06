@@ -16,7 +16,7 @@ class TipoPlantaType extends AbstractType
     {
         $builder
             ->add('nombre')
-            ->add('descripcion')
+            ->add('descripcion','textarea')
         ;
     }
     

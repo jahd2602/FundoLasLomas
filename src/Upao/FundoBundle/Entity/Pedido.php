@@ -40,11 +40,19 @@ class Pedido
      *
      * @ORM\ManyToOne(targetEntity="Upao\FundoBundle\Entity\Proveedor")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_proveedor", referencedColumnName="id")
+     * @ORM\JoinColumn(name="id_proveedor", referencedColumnName="id")
      * })
      */
     private $idProveedor;
 
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getFecha()->format('Y-m-d');
+    }
 
 
     /**
@@ -56,14 +64,14 @@ class Pedido
     public function setCosto($costo)
     {
         $this->costo = $costo;
-    
+
         return $this;
     }
 
     /**
      * Get costo
      *
-     * @return float 
+     * @return float
      */
     public function getCosto()
     {
@@ -79,14 +87,14 @@ class Pedido
     public function setFecha($fecha)
     {
         $this->fecha = $fecha;
-    
+
         return $this;
     }
 
     /**
      * Get fecha
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getFecha()
     {
@@ -96,7 +104,7 @@ class Pedido
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -112,14 +120,14 @@ class Pedido
     public function setIdProveedor(\Upao\FundoBundle\Entity\Proveedor $idProveedor = null)
     {
         $this->idProveedor = $idProveedor;
-    
+
         return $this;
     }
 
     /**
      * Get idProveedor
      *
-     * @return \Upao\FundoBundle\Entity\Proveedor 
+     * @return \Upao\FundoBundle\Entity\Proveedor
      */
     public function getIdProveedor()
     {

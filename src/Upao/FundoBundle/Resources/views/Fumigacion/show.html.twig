@@ -3,7 +3,7 @@
 {% block body -%}
     <h1>Fumigacion</h1>
 
-    <table class="record_properties">
+    <table class="record_properties table-striped">
         <tbody>
             <tr>
                 <th>Descripcion</th>
@@ -20,17 +20,15 @@
         </tbody>
     </table>
 
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('fumigacion') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>
-        <a href="{{ path('fumigacion_edit', { 'id': entity.id }) }}">
-            Edit
-        </a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-</ul>
+
+    <a class="btn btn-primary" href="{{ path('fumigacion') }}">
+        Regresar a la lista
+    </a>
+    <div class="clearfix"></div>
+
+
+    {{ render(controller('UpaoFundoBundle:Fundo:muestra', { 'plantas': plantas })) }}
+
+
+
 {% endblock %}

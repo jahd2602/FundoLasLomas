@@ -25,24 +25,28 @@ class ProveedorController extends Controller
         $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
 
-        $entities = $em->getRepository('UpaoFundoBundle:Proveedor')
-            ->createQueryBuilder('p')
-            ->orderBy('p.nombre', 'ASC')
-            ->getQuery()
-            ->getResult();
-
 
         $data = array();
 
         if ($request->isXmlHttpRequest()) {
 
+            $entities = $em->getRepository('UpaoFundoBundle:Proveedor')
+                ->createQueryBuilder('p')
+                ->orderBy('p.nombre', 'ASC')
+                ->getQuery()
+                ->getResult();
+
             foreach ($entities as $proveedor) {
+
+                $url = $this->generateUrl('proveedor_edit', array('id' => $proveedor->getId()));
+
+
                 $data['results'][] = array(
                     'nombre' => $proveedor->getNombre(),
                     'ruc' => $proveedor->getRuc(),
                     'telefono' => $proveedor->getTelefono(),
                     'contacto' => $proveedor->getContacto(),
-                    'id' => $proveedor->getId(),
+                    'id' => '<a href="'.$url.'" class="btn btn-modal btn-primary">Editar</a>',
                 );
             }
 
@@ -52,9 +56,7 @@ class ProveedorController extends Controller
             ));
 
         } else {
-            return $this->render('UpaoFundoBundle:Proveedor:index.html.twig', array(
-                'entities' => $entities,
-            ));
+            return $this->render('UpaoFundoBundle:Proveedor:index.html.twig');
         }
     }
 
@@ -68,12 +70,46 @@ class ProveedorController extends Controller
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
+        $session = $request->getSession();
+
+
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
 
-            return $this->redirect($this->generateUrl('proveedor_show', array('id' => $entity->getId())));
+            try {
+
+                $em->persist($entity);
+                $em->flush();
+
+                $data = array(
+                    'status' => 200,
+                    'success' => true,
+                    'message' => 'Se registró el proveedor correctamente'
+
+                );
+
+            } catch (\Exception $e) {
+                $data = array(
+                    'status' => 500,
+                    'error' => true,
+                    'message' => 'Error interno'
+
+                );
+            }
+
+            if ($request->isXmlHttpRequest()) {
+
+                return new \Symfony\Component\HttpFoundation\Response(json_encode($data), $data['status'], array(
+                    'Content-Type' => 'application/json'
+                ));
+
+            } else {
+                $session->getFlashBag()->add($data['status'] === 200 ? 'ok' : 'error', $data['message']);
+                return $this->redirect($this->generateUrl('proveedor'));
+
+            }
+
+
         }
 
         return $this->render('UpaoFundoBundle:Proveedor:new.html.twig', array(
@@ -96,7 +132,7 @@ class ProveedorController extends Controller
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        //$form->add('submit', 'submit', array('label' => 'Create'));
 
         return $form;
     }
@@ -175,7 +211,7 @@ class ProveedorController extends Controller
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+       // $form->add('submit', 'submit', array('label' => 'Update'));
 
         return $form;
     }
@@ -198,11 +234,45 @@ class ProveedorController extends Controller
         $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
 
-        if ($editForm->isValid()) {
-            $em->flush();
+        $session = $request->getSession();
 
-            return $this->redirect($this->generateUrl('proveedor_edit', array('id' => $id)));
+
+        if ($editForm->isValid()) {
+
+            try {
+
+                $em->flush();
+
+                $data = array(
+                    'status' => 200,
+                    'success' => true,
+                    'message' => 'Se actualizo el proveedor correctamente'
+
+                );
+
+            } catch (\Exception $e) {
+                $data = array(
+                    'status' => 500,
+                    'error' => true,
+                    'message' => 'Error interno'
+
+                );
+            }
+
+            if ($request->isXmlHttpRequest()) {
+
+                return new \Symfony\Component\HttpFoundation\Response(json_encode($data), $data['status'], array(
+                    'Content-Type' => 'application/json'
+                ));
+
+            } else {
+                $session->getFlashBag()->add($data['status'] === 200 ? 'ok' : 'error', $data['message']);
+                return $this->redirect($this->generateUrl('proveedor'));
+
+            }
+
         }
+
 
         return $this->render('UpaoFundoBundle:Proveedor:edit.html.twig', array(
             'entity' => $entity,

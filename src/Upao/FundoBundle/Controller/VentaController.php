@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Upao\FundoBundle\Entity\Venta;
 use Upao\FundoBundle\Form\VentaType;
+use Upao\FundoBundle\Util\Util;
 
 /**
  * Venta controller.
@@ -25,26 +26,31 @@ class VentaController extends Controller
         $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
 
-        $entities = $em->getRepository('UpaoFundoBundle:Venta')
-            ->createQueryBuilder('v')
-            ->orderBy('v.id', 'DESC')
-            ->getQuery()
-            ->getResult();
-
 
         $data = array();
 
         if ($request->isXmlHttpRequest()) {
+            $entities = $em->getRepository('UpaoFundoBundle:Venta')
+                ->createQueryBuilder('v')
+                ->orderBy('v.id', 'DESC')
+                ->getQuery()
+                ->getResult();
+
+
+
 
             foreach ($entities as $venta) {
-                $venta = new Venta();
+
+                $url = $this->generateUrl('venta_show', array('id' => $venta->getId()));
+
+
                 $data['results'][] = array(
                     'cosecha' => $venta->getIdCosecha()->getFecha()->format('Y-m-d'),
                     'cliente' => $venta->getIdCliente()->getNombre(),
-                    'kilos_vendidos' => $venta->getKilosVendidos(),
-                    'costo' => $venta->getCosto(),
-                    'observaciones' => $venta->getObservaciones(),
-                    'id' => $venta->getId(),
+                    'kilos_vendidos' => $venta->getKilosVendidos(). ' Kg.',
+                    'costo' =>'S/.'. $venta->getCosto(),
+                    'observaciones' => Util::truncate($venta->getObservaciones(),50),
+                    'id' => '<a href="'.$url.'" class="btn btn-modal btn-info">Detalle</a>',
                 );
             }
 
@@ -54,11 +60,10 @@ class VentaController extends Controller
             ));
 
         } else {
-            return $this->render('UpaoFundoBundle:Venta:index.html.twig', array(
-                'entities' => $entities,
-            ));
+            return $this->render('UpaoFundoBundle:Venta:index.html.twig');
         }
     }
+
     /**
      * Creates a new Venta entity.
      *
@@ -68,28 +73,60 @@ class VentaController extends Controller
         $entity = new Venta();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
+        $session = $request->getSession();
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
 
-            return $this->redirect($this->generateUrl('venta_show', array('id' => $entity->getId())));
+            try {
+
+                $em->persist($entity);
+                $em->flush();
+
+                $data = array(
+                    'status' => 200,
+                    'success' => true,
+                    'message' => 'Se registró la venta correctamente'
+
+                );
+
+            } catch (\Exception $e) {
+                $data = array(
+                    'status' => 500,
+                    'error' => true,
+                    'message' => 'Error interno'
+
+                );
+            }
+
+            if ($request->isXmlHttpRequest()) {
+
+                return new \Symfony\Component\HttpFoundation\Response(json_encode($data), $data['status'], array(
+                    'Content-Type' => 'application/json'
+                ));
+
+            } else {
+                $session->getFlashBag()->add($data['status'] === 200 ? 'ok' : 'error', $data['message']);
+                return $this->redirect($this->generateUrl('venta'));
+
+            }
+
+
         }
 
         return $this->render('UpaoFundoBundle:Venta:new.html.twig', array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
     /**
-    * Creates a form to create a Venta entity.
-    *
-    * @param Venta $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to create a Venta entity.
+     *
+     * @param Venta $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createCreateForm(Venta $entity)
     {
         $form = $this->createForm(new VentaType(), $entity, array(
@@ -97,7 +134,7 @@ class VentaController extends Controller
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        //$form->add('submit', 'submit', array('label' => 'Create'));
 
         return $form;
     }
@@ -109,11 +146,11 @@ class VentaController extends Controller
     public function newAction()
     {
         $entity = new Venta();
-        $form   = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($entity);
 
         return $this->render('UpaoFundoBundle:Venta:new.html.twig', array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
@@ -134,8 +171,8 @@ class VentaController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render('UpaoFundoBundle:Venta:show.html.twig', array(
-            'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),        ));
+            'entity' => $entity,
+            'delete_form' => $deleteForm->createView(),));
     }
 
     /**
@@ -156,19 +193,19 @@ class VentaController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render('UpaoFundoBundle:Venta:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
 
     /**
-    * Creates a form to edit a Venta entity.
-    *
-    * @param Venta $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to edit a Venta entity.
+     *
+     * @param Venta $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createEditForm(Venta $entity)
     {
         $form = $this->createForm(new VentaType(), $entity, array(
@@ -180,6 +217,7 @@ class VentaController extends Controller
 
         return $form;
     }
+
     /**
      * Edits an existing Venta entity.
      *
@@ -205,11 +243,12 @@ class VentaController extends Controller
         }
 
         return $this->render('UpaoFundoBundle:Venta:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
+
     /**
      * Deletes a Venta entity.
      *
@@ -247,7 +286,6 @@ class VentaController extends Controller
             ->setAction($this->generateUrl('venta_delete', array('id' => $id)))
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
-        ;
+            ->getForm();
     }
 }

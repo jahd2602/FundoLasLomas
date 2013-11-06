@@ -25,22 +25,25 @@ class TipoPlantaController extends Controller
         $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
 
-        $entities = $em->getRepository('UpaoFundoBundle:TipoPlanta')
-            ->createQueryBuilder('t')
-            ->orderBy('t.nombre', 'ASC')
-            ->getQuery()
-            ->getResult();
-
 
         $data = array();
 
         if ($request->isXmlHttpRequest()) {
 
+
+            $entities = $em->getRepository('UpaoFundoBundle:TipoPlanta')
+                ->createQueryBuilder('t')
+                ->orderBy('t.nombre', 'ASC')
+                ->getQuery()
+                ->getResult();
             foreach ($entities as $tipoPlanta) {
+                $url = $this->generateUrl('tipoplanta_edit', array('id' => $tipoPlanta->getId()));
+
+
                 $data['results'][] = array(
                     'nombre' => $tipoPlanta->getNombre(),
                     'descripcion' => $tipoPlanta->getDescripcion(),
-                    'id' => $tipoPlanta->getId(),
+                    'id' => '<a href="'.$url.'" class="btn btn-modal btn-primary">Editar</a>',
                 );
             }
 
@@ -50,9 +53,7 @@ class TipoPlantaController extends Controller
             ));
 
         } else {
-            return $this->render('UpaoFundoBundle:TipoPlanta:index.html.twig', array(
-                'entities' => $entities,
-            ));
+            return $this->render('UpaoFundoBundle:TipoPlanta:index.html.twig');
         }
 
     }
@@ -66,13 +67,46 @@ class TipoPlantaController extends Controller
         $entity = new TipoPlanta();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
+        $session = $request->getSession();
+
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
 
-            return $this->redirect($this->generateUrl('tipoplanta_show', array('id' => $entity->getId())));
+            try {
+
+                $em->persist($entity);
+                $em->flush();
+
+                $data = array(
+                    'status' => 200,
+                    'success' => true,
+                    'message' => 'Se registró el tipo de planta correctamente'
+
+                );
+
+            } catch (\Exception $e) {
+                $data = array(
+                    'status' => 500,
+                    'error' => true,
+                    'message' => 'Error interno'
+
+                );
+            }
+
+            if ($request->isXmlHttpRequest()) {
+
+                return new \Symfony\Component\HttpFoundation\Response(json_encode($data), $data['status'], array(
+                    'Content-Type' => 'application/json'
+                ));
+
+            } else {
+                $session->getFlashBag()->add($data['status'] === 200 ? 'ok' : 'error', $data['message']);
+                return $this->redirect($this->generateUrl('tipoplanta'));
+
+            }
+
+
         }
 
         return $this->render('UpaoFundoBundle:TipoPlanta:new.html.twig', array(
@@ -95,7 +129,7 @@ class TipoPlantaController extends Controller
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        //$form->add('submit', 'submit', array('label' => 'Create'));
 
         return $form;
     }
@@ -174,7 +208,7 @@ class TipoPlantaController extends Controller
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        //$form->add('submit', 'submit', array('label' => 'Update'));
 
         return $form;
     }
@@ -197,11 +231,45 @@ class TipoPlantaController extends Controller
         $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
 
-        if ($editForm->isValid()) {
-            $em->flush();
+        $session = $request->getSession();
 
-            return $this->redirect($this->generateUrl('tipoplanta_edit', array('id' => $id)));
+
+        if ($editForm->isValid()) {
+
+            try {
+
+                $em->flush();
+
+                $data = array(
+                    'status' => 200,
+                    'success' => true,
+                    'message' => 'Se actualizo el Tipo de planta correctamente'
+
+                );
+
+            } catch (\Exception $e) {
+                $data = array(
+                    'status' => 500,
+                    'error' => true,
+                    'message' => 'Error interno'
+
+                );
+            }
+
+            if ($request->isXmlHttpRequest()) {
+
+                return new \Symfony\Component\HttpFoundation\Response(json_encode($data), $data['status'], array(
+                    'Content-Type' => 'application/json'
+                ));
+
+            } else {
+                $session->getFlashBag()->add($data['status'] === 200 ? 'ok' : 'error', $data['message']);
+                return $this->redirect($this->generateUrl('tipoplanta'));
+
+            }
+
         }
+
 
         return $this->render('UpaoFundoBundle:TipoPlanta:edit.html.twig', array(
             'entity' => $entity,

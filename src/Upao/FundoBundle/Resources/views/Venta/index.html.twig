@@ -9,11 +9,11 @@
                 <table class="table table-striped m-b-none" data-href="{{ path('venta') }}" data-ride="datatables">
                     <thead>
                     <tr>
-                        <th data-property="cosecha" width="30%">Cosecha</th>
+                        <th data-property="cosecha" width="10%">Cosecha</th>
                         <th data-property="cliente" width="20%">Cliente</th>
                         <th data-property="kilos_vendidos" width="10%">Kg. Vendidos</th>
                         <th data-property="costo" width="10%">Costo</th>
-                        <th data-property="observaciones" width="10%">Observaciones</th>
+                        <th data-property="observaciones" width="30%">Observaciones</th>
                         <th data-property="id" width="10%">Detalle</th>
 
                     </tr>
@@ -26,6 +26,7 @@
         </section>
     </div>
 
+    <a class="btn btn-primary btn-modal" href="{{ path('venta_new') }}">Nuevo</a>
 
 {% endblock %}
 {% block javascript %}

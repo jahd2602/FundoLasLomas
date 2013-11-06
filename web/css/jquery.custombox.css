@@ -30,7 +30,9 @@
 .custombox-error {
     position: fixed;
     top: 50%;
-    left: 50%;
+
+    /* //TODO corregir esto debe ir sin el important */
+    left: 25% !important;
     -webkit-backface-visibility: hidden;
     -moz-backface-visibility: hidden;
     -ms-backface-visibility: hidden;

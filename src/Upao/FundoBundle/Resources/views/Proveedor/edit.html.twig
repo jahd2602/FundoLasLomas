@@ -1,16 +1,46 @@
-{% extends '::base.html.twig' %}
+{% extends app.request.xmlHttpRequest ? "UpaoFundoBundle:Layout:modal.html.twig" :  "UpaoFundoBundle:Layout:base.html.twig" %}
 
-{% block body -%}
-    <h1>Proveedor edit</h1>
+{% block body %}
 
-    {{ form(edit_form) }}
+    <form {% block enctype %}{{ form_enctype(edit_form) }}{% endblock %}
+            class="form-horizontal form-accion"
+            action="{% block action %}{{ path('proveedor_update',{'id':entity.id}) }}{% endblock %}"
+            method="{% block method %}put{% endblock %}" role="form">
 
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('proveedor') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-</ul>
+        <div class="modal-header">
+            <h4 class="modal-title">{% block title %}Proveedor{% endblock %}</h4>
+        </div>
+
+        <div class="modal-body">
+
+            <div data-alerts="alerts"></div>
+            {% block content %}
+                {{ form_errors(edit_form) }}
+                {{ form_rest(edit_form) }}
+            {% endblock %}
+
+
+        </div>
+
+        <div class="modal-footer">
+
+            {% block buttons %}
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            {% endblock %}
+        </div>
+
+    </form>
 {% endblock %}
+
+
+{% block javascript %}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+        });
+    </script>
+
+
+{% endblock %}
+

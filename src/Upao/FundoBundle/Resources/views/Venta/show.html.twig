@@ -1,40 +1,70 @@
-{% extends '::base.html.twig' %}
+{% extends app.request.xmlHttpRequest ? "UpaoFundoBundle:Layout:modal.html.twig" :  "UpaoFundoBundle:Layout:base.html.twig" %}
 
-{% block body -%}
-    <h1>Venta</h1>
+{% block body %}
 
-    <table class="record_properties">
-        <tbody>
-            <tr>
-                <th>Kilosvendidos</th>
-                <td>{{ entity.kilosVendidos }}</td>
-            </tr>
-            <tr>
-                <th>Observaciones</th>
-                <td>{{ entity.observaciones }}</td>
-            </tr>
-            <tr>
-                <th>Costo</th>
-                <td>{{ entity.costo }}</td>
-            </tr>
-            <tr>
-                <th>Id</th>
-                <td>{{ entity.id }}</td>
-            </tr>
-        </tbody>
-    </table>
 
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('venta') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>
-        <a href="{{ path('venta_edit', { 'id': entity.id }) }}">
-            Edit
-        </a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-</ul>
+
+    <div class="modal-header">
+        <h4 class="modal-title">{% block title %}Venta{% endblock %}</h4>
+    </div>
+
+    <div class="modal-body">
+
+
+        {% block content %}
+
+
+            <table class="record_properties table-striped">
+                <tbody>
+                <tr>
+                    <th>Cliente:</th>
+                    <td>{{ entity.idCliente.nombre }}</td>
+                </tr>
+                <tr>
+                    <th>Cosecha:</th>
+                    <td>{{ entity.idCosecha }}</td>
+                </tr>
+                <tr>
+                    <th>Kilos Vendidos:</th>
+                    <td>{{ entity.kilosVendidos }} Kg.</td>
+                </tr>
+                <tr>
+                    <th>Observaciones:</th>
+                    <td>{{ entity.observaciones }}</td>
+                </tr>
+                <tr>
+                    <th>Costo:</th>
+                    <td>S/.{{ entity.costo }}</td>
+                </tr>
+                </tbody>
+            </table>
+
+
+
+        {% endblock %}
+
+
+    </div>
+
+    <div class="modal-footer">
+
+        <a href="{{ path('venta') }}" class="btn btn-primary">Regresar a la Lista</a>
+
+
+    </div>
+
 {% endblock %}
+
+
+{% block javascript %}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+        });
+    </script>
+
+
+{% endblock %}
+
+

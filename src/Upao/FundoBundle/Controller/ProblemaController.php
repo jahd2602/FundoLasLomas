@@ -26,24 +26,27 @@ class ProblemaController extends Controller
         $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
 
-        $entities = $em->getRepository('UpaoFundoBundle:Problema')
-            ->createQueryBuilder('p')
-            ->orderBy('p.fecha', 'DESC')
-            ->getQuery()
-            ->getResult();
-
 
         $data = array();
 
         if ($request->isXmlHttpRequest()) {
+            $entities = $em->getRepository('UpaoFundoBundle:Problema')
+                ->createQueryBuilder('p')
+                ->orderBy('p.fecha', 'DESC')
+                ->getQuery()
+                ->getResult();
 
             foreach ($entities as $problema) {
+
+                $url = $this->generateUrl('problema_show', array('id' => $problema->getId()));
+
+
                 $data['results'][] = array(
                     'fecha' => $problema->getFecha()->format('Y-m-d'),
                     'descripcion' => Util::truncate($problema->getDescripcion(), 50),
                     'planta' => $problema->getIdPlanta()->getCodigo(),
                     'resuelto' => $problema->getResuelto() ? 'SI' : 'NO',
-                    'id' => $problema->getId(),
+                    'id' => '<a href="' . $url . '" class="btn btn-modal btn-danger">Detalle</a>',
                 );
             }
 
@@ -53,9 +56,7 @@ class ProblemaController extends Controller
             ));
 
         } else {
-            return $this->render('UpaoFundoBundle:Problema:index.html.twig', array(
-                'entities' => $entities,
-            ));
+            return $this->render('UpaoFundoBundle:Problema:index.html.twig');
         }
 
 
@@ -138,6 +139,63 @@ class ProblemaController extends Controller
         return $this->render('UpaoFundoBundle:Problema:show.html.twig', array(
             'entity' => $entity,
             'delete_form' => $deleteForm->createView(),));
+    }
+
+
+    public function resolverAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $request = $this->getRequest();
+        $id = $request->get('id');
+
+        $entity = $em->getRepository('UpaoFundoBundle:Problema')->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Problema entity.');
+        }
+
+        $entity->setResuelto(true);
+
+        $data = array();
+
+
+        try {
+
+
+            $em->persist($entity);
+            $em->flush();
+
+
+            $data = array(
+                'status' => 200,
+                'success' => true,
+                'message' => 'Se resolvio el problema correctamente'
+
+            );
+
+        } catch (Exception $e) {
+
+
+            $data = array(
+                'status' => 500,
+                'error' => true,
+                'message' => 'Error interno'
+
+            );
+        }
+
+
+
+        if ($request->isXmlHttpRequest()) {
+
+
+            return new \Symfony\Component\HttpFoundation\Response(json_encode($data), 200, array(
+                'Content-Type' => 'application/json'
+            ));
+
+        } else {
+            return $this->redirect($this->generateUrl('problema'));
+        }
     }
 
     /**

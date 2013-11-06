@@ -1,40 +1,76 @@
-{% extends '::base.html.twig' %}
+{% extends app.request.xmlHttpRequest ? "UpaoFundoBundle:Layout:modal.html.twig" :  "UpaoFundoBundle:Layout:base.html.twig" %}
 
-{% block body -%}
-    <h1>Problema</h1>
+{% block body %}
 
-    <table class="record_properties">
-        <tbody>
-            <tr>
-                <th>Descripcion</th>
-                <td>{{ entity.descripcion }}</td>
-            </tr>
-            <tr>
-                <th>Fecha</th>
-                <td>{{ entity.fecha|date('Y-m-d H:i:s') }}</td>
-            </tr>
-            <tr>
-                <th>Resuelto</th>
-                <td>{{ entity.resuelto }}</td>
-            </tr>
-            <tr>
-                <th>Id</th>
-                <td>{{ entity.id }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <form class="form-horizontal form-accion"
+          action="{% block action %}{{ path('problema_resolver') }}{% endblock %}"
+          method="{% block method %}post{% endblock %}" role="form">
 
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('problema') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>
-        <a href="{{ path('problema_edit', { 'id': entity.id }) }}">
-            Edit
-        </a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-</ul>
+
+        <div class="modal-header">
+            <h4 class="modal-title">{% block title %}Problema{% endblock %}</h4>
+        </div>
+
+        <div class="modal-body">
+
+            <div data-alerts="alerts"></div>
+
+            {% block content %}
+
+
+                <input type="hidden" name="id" value="{{ entity.id }}">
+                <table class="record_properties table-striped">
+                    <tbody>
+                    <tr>
+                        <th>Planta:</th>
+                        <td>{{ entity.idPlanta.codigo }}</td>
+                    </tr>
+                    <tr>
+                        <th>Descripcion:</th>
+                        <td>{{ entity.descripcion }}</td>
+                    </tr>
+                    <tr>
+                        <th>Fecha:</th>
+                        <td>{{ entity.fecha|date('Y-m-d H:i') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Resuelto:</th>
+                        <td>{{ entity.resuelto ? 'SI' : 'PENDIENTE' }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+
+
+            {% endblock %}
+
+
+        </div>
+
+        <div class="modal-footer">
+
+            <a href="{{ path('problema') }}" class="btn btn-primary">Regresar a la Lista</a>
+
+            {% block buttons %}
+                <button type="submit"
+                        class="btn btn-submit btn-success">Marcar como resuelto
+                </button>
+
+
+            {% endblock %}
+        </div>
+    </form>
+
+{% endblock %}
+
+
+{% block javascript %}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+        });
+    </script>
+
+
 {% endblock %}

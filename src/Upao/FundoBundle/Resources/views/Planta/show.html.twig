@@ -1,40 +1,80 @@
 {% extends '::base.html.twig' %}
 
 {% block body -%}
-    <h1>Planta</h1>
 
-    <table class="record_properties">
-        <tbody>
-            <tr>
-                <th>Columna</th>
-                <td>{{ entity.columna }}</td>
-            </tr>
-            <tr>
-                <th>Fila</th>
-                <td>{{ entity.fila }}</td>
-            </tr>
-            <tr>
-                <th>Estado</th>
-                <td>{{ entity.estado }}</td>
-            </tr>
-            <tr>
-                <th>Id</th>
-                <td>{{ entity.id }}</td>
-            </tr>
-        </tbody>
-    </table>
 
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('planta') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>
-        <a href="{{ path('planta_edit', { 'id': entity.id }) }}">
-            Edit
-        </a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-</ul>
+    <div class="timeline">
+        <article class="timeline-item active">
+            <div class="timeline-caption">
+                <div class="panel bg-success lter no-borders">
+                    <div class="panel-body"> <span>
+                                {{ planta.idPedido.idProveedor.nombre }}</span>
+
+                        <h4><span>{{ planta.idTipoPlanta.nombre }}</span>
+                        </h4>
+
+                        <div class="m-t-sm timeline-action"><span
+                                    class="h3 pull-left m-r-sm">{{ planta.codigo }}</span>
+
+                            <button class="btn btn-sm btn-white"><i class="icon-ok"></i>
+                                {{ planta.estado }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        {% for event in timeline %}
+
+
+            {% if loop.index0 is even %}
+
+                <article class="timeline-item">
+                    <div class="timeline-caption">
+                        <div class="panel">
+                            <div class="panel-body"><span class="arrow left"></span>
+                                                <span class="timeline-icon">
+                                                    <i class="icon time-icon time bg-{{ event.tipo }}"></i>
+                                                </span>
+                                <span class="timeline-date">{{ event.fecha }}</span>
+                                <h5>
+                                    <span>{{ event.titulo }}</span>
+                                </h5>
+
+                                <p> {{ event.descripcion | raw }} </p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+            {% else %}
+
+                <article class="timeline-item alt">
+                    <div class="timeline-caption">
+                        <div class="panel">
+                            <div class="panel-body"><span class="arrow right"></span>
+                                                <span class="timeline-icon">
+                                                    <i class="icon time-icon time bg-{{ event.tipo }}"></i>
+                                                </span>
+                                <span class="timeline-date">{{ event.fecha }}</span>
+                                <h5>
+                                    <span>{{ event.titulo }}</span>
+                                </h5>
+
+                                <p> {{ event.descripcion }} </p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            {% endif %}
+
+
+
+        {% endfor %}
+
+
+    </div>
+
+
 {% endblock %}

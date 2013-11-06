@@ -9,11 +9,11 @@
                 <table class="table table-striped m-b-none" data-href="{{ path('estadoambiente') }}" data-ride="datatables">
                     <thead>
                     <tr>
-                        <th data-property="fecha" width="30%">Fecha</th>
+                        <th data-property="fecha" width="20%">Fecha</th>
                         <th data-property="humedad" width="10%">Humedad</th>
                         <th data-property="presion_ambiental" width="10%">Presión Amb.</th>
                         <th data-property="temperatura" width="10%">Temp.</th>
-                        <th data-property="observaciones" width="35%">Observaciones</th>
+                        <th data-property="observaciones" width="45%">Observaciones</th>
                         <th data-property="id" width="5%">Detalle</th>
 
                     </tr>
@@ -26,6 +26,7 @@
         </section>
     </div>
 
+    <a class="btn btn-primary btn-modal" href="{{ path('estadoambiente_new') }}">Nuevo</a>
 
 {% endblock %}
 {% block javascript %}

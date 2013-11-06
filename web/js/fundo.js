@@ -75,6 +75,8 @@ $(document).ready(function () {
     }
 
 
+
+
     $(document).on('submit', '.form-accion', function (event) {
 
         event.preventDefault();
@@ -93,7 +95,10 @@ $(document).ready(function () {
         request.done(function (data) {
 
             var $fundo = $("#fundo");
-            $fundo.load($fundo.data('url'), bindSelectable);
+            if ($fundo.length) {
+                $fundo.load($fundo.data('url'), bindSelectable);
+
+            }
             $alert.trigger('clear-alerts');
 
         });
@@ -124,11 +129,15 @@ $(document).ready(function () {
 
     $('#options').on('click', 'a', function (event) {
 
+        var $link = $(this);
+        var textoActual = $link.text();
+        $link.text('cargando...');
+
         $.fn.custombox({
             url: $(this).attr('href'),
-            effect: 'fadein',
             complete: function (data) {
 
+                $link.text(textoActual);
 
                 var $modal = $('.custombox-modal-content');
                 var $element = $modal.find('.rango-seleccionado');
@@ -152,7 +161,6 @@ $(document).ready(function () {
                     create: false
                 });
 
-                console.log($select);
 
                 control = typeof $select[0] !== 'undefined' ? $select[0].selectize : undefined;
 
@@ -166,7 +174,6 @@ $(document).ready(function () {
                     control.clearOptions();
                 }
 
-                console.log(tipo);
                 var estaOcupado = false;
 
                 for (var i = 0; i < opciones.length; i++) {
@@ -211,16 +218,15 @@ $(document).ready(function () {
                             priority: 'warning'
                         }
                     ]);
-                }else if (tipo === 'planta' && !estaOcupado) {
+                } else if (tipo === 'planta' && !estaOcupado) {
                     console.log('planta estaLibre')
                     /*$alert.trigger('add-alerts', [
-                        {
-                            message: 'Existen posiciones libres en las ubicaciones seleccionadas',
-                            priority: 'warning'
-                        }
-                    ]);*/
+                     {
+                     message: 'Existen posiciones libres en las ubicaciones seleccionadas',
+                     priority: 'warning'
+                     }
+                     ]);*/
                 }
-
 
 
             },
@@ -237,6 +243,36 @@ $(document).ready(function () {
     });
 
 
+    $(document).on('click', 'a.btn-modal', function (event) {
+
+        var $link = $(this);
+        var textoActual = $link.text();
+        $link.text('cargando...');
+
+        $.fn.custombox({
+            url: $(this).attr('href'),
+            complete: function (data) {
+
+                $link.text(textoActual);
+                var $modal = $('.custombox-modal-content');
+
+                bindSelect($modal);
+                bindAlert($modal);
+                bindDatePicker($modal);
+
+
+            },
+            open: function () {
+                console.log('open');
+            },
+            close: function () {
+                console.log('close');
+            }
+        });
+
+        event.preventDefault();
+
+    });
 
     $(document).on('click.modal', '[rel="modal:close"]', function (event) {
         $.fn.custombox('close');

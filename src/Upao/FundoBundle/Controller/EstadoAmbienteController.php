@@ -26,17 +26,23 @@ class EstadoAmbienteController extends Controller
         $em = $this->getDoctrine()->getManager();
         $request= $this->getRequest();
 
-        $entities = $em->getRepository('UpaoFundoBundle:EstadoAmbiente')
-            ->createQueryBuilder('e')
-            ->orderBy('e.fecha', 'DESC')
-            ->getQuery()
-            ->getResult();
 
         $data = array();
 
         if ($request->isXmlHttpRequest()) {
+            $entities = $em->getRepository('UpaoFundoBundle:EstadoAmbiente')
+                ->createQueryBuilder('e')
+                ->orderBy('e.fecha', 'DESC')
+                ->getQuery()
+                ->getResult();
 
             foreach ($entities as $estadoAmbiente) {
+
+
+                $url = $this->generateUrl('estadoambiente_edit', array('id' => $estadoAmbiente->getId()));
+
+
+
                 $data['results'][] = array(
                     'fecha' => $estadoAmbiente->getFecha()->format('Y-m-d'),
                     'humedad' => $estadoAmbiente->getHumedad(),
@@ -44,7 +50,7 @@ class EstadoAmbienteController extends Controller
                     'temperatura' => $estadoAmbiente->getTemperatura(),
                 //    'observaciones' => Util::truncate($estadoAmbiente->getObservaciones(),50),
                     'observaciones' => $estadoAmbiente->getObservaciones(),
-                    'id' => $estadoAmbiente->getId(),
+                    'id' => '<a href="'.$url.'" class="btn btn-modal btn-primary">Editar</a>',
                 );
             }
 
@@ -54,9 +60,7 @@ class EstadoAmbienteController extends Controller
             ));
 
         } else {
-            return $this->render('UpaoFundoBundle:EstadoAmbiente:index.html.twig', array(
-                'entities' => $entities,
-            ));
+            return $this->render('UpaoFundoBundle:EstadoAmbiente:index.html.twig');
         }
     }
     /**
@@ -69,12 +73,46 @@ class EstadoAmbienteController extends Controller
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
+        $session = $request->getSession();
+
+
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
 
-            return $this->redirect($this->generateUrl('estadoambiente_show', array('id' => $entity->getId())));
+            try {
+
+                $em->persist($entity);
+                $em->flush();
+
+                $data = array(
+                    'status' => 200,
+                    'success' => true,
+                    'message' => 'Se registró el estado del ambiente correctamente'
+
+                );
+
+            } catch (\Exception $e) {
+                $data = array(
+                    'status' => 500,
+                    'error' => true,
+                    'message' => 'Error interno'
+
+                );
+            }
+
+            if ($request->isXmlHttpRequest()) {
+
+                return new \Symfony\Component\HttpFoundation\Response(json_encode($data), $data['status'], array(
+                    'Content-Type' => 'application/json'
+                ));
+
+            } else {
+                $session->getFlashBag()->add($data['status'] === 200 ? 'ok' : 'error', $data['message']);
+                return $this->redirect($this->generateUrl('estadoambiente'));
+
+            }
+
+
         }
 
         return $this->render('UpaoFundoBundle:EstadoAmbiente:new.html.twig', array(
@@ -97,7 +135,7 @@ class EstadoAmbienteController extends Controller
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        //$form->add('submit', 'submit', array('label' => 'Create'));
 
         return $form;
     }
@@ -176,7 +214,7 @@ class EstadoAmbienteController extends Controller
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+       // $form->add('submit', 'submit', array('label' => 'Update'));
 
         return $form;
     }
@@ -198,11 +236,45 @@ class EstadoAmbienteController extends Controller
         $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
 
-        if ($editForm->isValid()) {
-            $em->flush();
+        $session = $request->getSession();
 
-            return $this->redirect($this->generateUrl('estadoambiente_edit', array('id' => $id)));
+
+        if ($editForm->isValid()) {
+
+            try {
+
+                $em->flush();
+
+                $data = array(
+                    'status' => 200,
+                    'success' => true,
+                    'message' => 'Se actualizo el Estado ambiental correctamente'
+
+                );
+
+            } catch (\Exception $e) {
+                $data = array(
+                    'status' => 500,
+                    'error' => true,
+                    'message' => 'Error interno'
+
+                );
+            }
+
+            if ($request->isXmlHttpRequest()) {
+
+                return new \Symfony\Component\HttpFoundation\Response(json_encode($data), $data['status'], array(
+                    'Content-Type' => 'application/json'
+                ));
+
+            } else {
+                $session->getFlashBag()->add($data['status'] === 200 ? 'ok' : 'error', $data['message']);
+                return $this->redirect($this->generateUrl('estadoambiente'));
+
+            }
+
         }
+
 
         return $this->render('UpaoFundoBundle:EstadoAmbiente:edit.html.twig', array(
             'entity'      => $entity,

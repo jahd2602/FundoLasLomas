@@ -28,24 +28,25 @@ class AbonoController extends Controller
         $em = $this->getDoctrine()->getManager();
 
 
-        $entities = $em->getRepository('UpaoFundoBundle:Abono')
-            ->createQueryBuilder('a')
-            ->orderBy('a.fecha', 'DESC')
-            ->getQuery()
-            ->getResult();
-
-
         $data = array();
 
         if ($request->isXmlHttpRequest()) {
 
+            $entities = $em->getRepository('UpaoFundoBundle:Abono')
+                ->createQueryBuilder('a')
+                ->orderBy('a.fecha', 'DESC')
+                ->getQuery()
+                ->getResult();
+
             foreach ($entities as $abono) {
+                $url = $this->generateUrl('abono_show', array('id' => $abono->getId()));
+
                 $data['results'][] = array(
                     'fecha' => $abono->getFecha()->format('Y-m-d'),
                     'empleado' => $abono->getIdEmpleado()->getNombre(),
                     'descripcion' => Util::truncate($abono->getDescripcion(), 50),
                     'observacion' => Util::truncate($abono->getObservacion(), 50),
-                    'id' => $abono->getId(),
+                    'id' => '<a href="'.$url.'" class="btn btn-info">Detalle</a>',
                 );
             }
 
@@ -56,9 +57,7 @@ class AbonoController extends Controller
 
         } else {
 
-            return $this->render('UpaoFundoBundle:Abono:index.html.twig', array(
-                'entities' => $entities,
-            ));
+            return $this->render('UpaoFundoBundle:Abono:index.html.twig', array());
         }
 
     }
@@ -135,11 +134,23 @@ class AbonoController extends Controller
             throw $this->createNotFoundException('Unable to find Abono entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
+        $plantas = array();
+        $abonoPlantas = $em->getRepository('UpaoFundoBundle:AbonoPlanta')
+            ->findBy(
+                array(
+                    'idAbono' => $entity->getId(),
+                ));
+
+        foreach ($abonoPlantas as $abonoPlanta) {
+            $plantas[] = $abonoPlanta->getIdPlanta();
+        }
+
 
         return $this->render('UpaoFundoBundle:Abono:show.html.twig', array(
             'entity' => $entity,
-            'delete_form' => $deleteForm->createView(),));
+            'plantas' => $plantas,
+
+        ));
     }
 
     /**

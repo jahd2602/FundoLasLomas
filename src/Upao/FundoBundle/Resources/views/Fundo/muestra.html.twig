@@ -1,0 +1,21 @@
+<ol class="fundo-region">
+
+    {% for bloque in bloques %}
+
+
+            <li class="ui-state-default {{ bloque.estado }}"
+                data-planta="{{ bloque.planta }}"
+                data-codigo="{{ bloque.codigo }}"
+                data-fila="{{ bloque.fila }}"
+                data-columna="{{ bloque.columna }}"
+                style="width: {{ 100 / limite.columnas }}%">
+
+                <span class="tipo">{{ bloque.tipo }}</span>
+                <a href="{{ bloque.enlace }}"><span class="codigo">{{ bloque.codigo }}</span></a>
+            </li>
+
+
+    {% endfor %}
+
+
+</ol>

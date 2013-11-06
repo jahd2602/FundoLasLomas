@@ -27,6 +27,7 @@ use Upao\FundoBundle\Form\RegistrarRiegoType;
 use Upao\FundoBundle\Form\RegistrarSiembraType;
 use Upao\FundoBundle\Form\RemovePlantaType;
 use Upao\FundoBundle\Form\RemoverPlantaType;
+use Upao\FundoBundle\Util\Util;
 
 /**
  * Planta controller.
@@ -184,7 +185,6 @@ class PlantaController extends Controller
                 $em->getConnection()->beginTransaction();
 
                 try {
-
 
 
                     foreach ($plantas as $planta) {
@@ -682,7 +682,7 @@ class PlantaController extends Controller
 
                     );
 
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
 
                     $em->getConnection()->rollback();
 
@@ -810,11 +810,115 @@ class PlantaController extends Controller
             throw $this->createNotFoundException('Unable to find Planta entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
+        $timeline = array();
+        $formatoFecha = 'Y-m-d H:i';
+
+
+        $problemas = $em->getRepository('UpaoFundoBundle:Problema')
+            ->findBy(
+                array(
+                    'idPlanta' => $entity->getId(),
+                ));
+
+        foreach ($problemas as $problema) {
+
+            $id = $problema->getId();
+            $url = $this->generateUrl('problema_resolver');
+
+            //TODO esto esta muyyyy mal
+            $form = <<<HTML
+
+            <br>
+            <br>
+            <form class="form-horizontal form-accion"
+                  action="{$url}"
+                  method="post" role="form">
+                <div data-alerts="alerts"></div>
+                <div class="clearfix"></div>
+                <input type="hidden" name="id" value="{$id}">
+                <button type="submit"
+                        class="btn btn-submit btn-sm btn-success">Marcar como resuelto
+                </button>
+            </form>
+
+HTML;
+
+
+            $timeline[] = array(
+                'tipo' => 'danger',
+                'timestamp' => $problema->getFecha()->getTimestamp(),
+                'id' => $problema->getId(),
+                'titulo' => 'PROBLEMA: ' . ($problema->getResuelto() ? 'RESUELTO' : 'PENDIENTE'),
+                'descripcion' => $problema->getDescripcion() . ($problema->getResuelto() ? '' : $form),
+                'fecha' => $problema->getFecha()->format($formatoFecha),
+            );
+        }
+
+
+        $abonamientos = $em->getRepository('UpaoFundoBundle:AbonoPlanta')
+            ->findBy(
+                array(
+                    'idPlanta' => $entity->getId(),
+                ));
+
+
+        foreach ($abonamientos as $abonamiento) {
+            $timeline[] = array(
+                'tipo' => 'primary',
+                'timestamp' => $abonamiento->getIdAbono()->getFecha()->getTimestamp(),
+                'id' => $abonamiento->getId(),
+                'titulo' => 'ABONÓ: ' . $abonamiento->getIdAbono()->getIdEmpleado()->getNombre(),
+                'descripcion' => $abonamiento->getIdAbono()->getDescripcion(),
+                'fecha' => $abonamiento->getIdAbono()->getFecha()->format($formatoFecha),
+            );
+        }
+
+
+        $riegos = $em->getRepository('UpaoFundoBundle:RiegoPlanta')
+            ->findBy(
+                array(
+                    'idPlanta' => $entity->getId(),
+                ));
+
+
+        foreach ($riegos as $riego) {
+            $timeline[] = array(
+                'tipo' => 'info',
+                'timestamp' => $riego->getIdRiego()->getFecha()->getTimestamp(),
+                'id' => $riego->getId(),
+                'titulo' => 'REGÓ: ' . $riego->getIdRiego()->getIdEmpleado()->getNombre(),
+                'descripcion' => $riego->getIdRiego()->getObservacion(),
+                'fecha' => $riego->getIdRiego()->getFecha()->format($formatoFecha),
+            );
+        }
+
+
+        $fumigaciones = $em->getRepository('UpaoFundoBundle:FumigacionPlanta')
+            ->findBy(
+                array(
+                    'idPlanta' => $entity->getId(),
+                ));
+
+
+        foreach ($fumigaciones as $fumigacion) {
+            $timeline[] = array(
+                'tipo' => 'warning',
+                'timestamp' => $fumigacion->getIdFumigacion()->getFecha()->getTimestamp(),
+                'id' => $fumigacion->getId(),
+                'titulo' => 'FUMIGÓ: ' . $fumigacion->getIdFumigacion()->getIdEmpleado()->getNombre(),
+                'descripcion' => $fumigacion->getIdFumigacion()->getDescripcion(),
+                'fecha' => $fumigacion->getIdFumigacion()->getFecha()->format($formatoFecha),
+            );
+        }
+
+        Util::aasort($timeline, 'timestamp');
+        $timeline = array_reverse($timeline);
 
         return $this->render('UpaoFundoBundle:Planta:show.html.twig', array(
-            'entity' => $entity,
-            'delete_form' => $deleteForm->createView(),));
+            'planta' => $entity,
+            'timeline' => $timeline,
+
+        ));
     }
 
     /**

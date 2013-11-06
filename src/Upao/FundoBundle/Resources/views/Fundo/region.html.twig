@@ -1,29 +1,18 @@
 <ol id="fundo-region">
 
-    {% for fila in 1..limite.filas %}
-
-        {% for columna in 1..limite.columnas %}
-            {% set estado = 'vacio' %}
-            {% set idPlanta = '' %}
-            {% set codigo = (columna | convertirLetra)  ~ fila %}
-            {% set planta = (codigo | buscarPlanta(columna,fila)) %}
-
-            {% if planta %}
-                {% set estado = 'sembrado' %}
-                {% set idPlanta = planta.id %}
-
-            {% endif %}
+    {% for bloque in bloques %}
 
 
-            <li class="ui-state-default {{ estado }}"
-                data-planta="{{ idPlanta }}"
-                data-codigo="{{ codigo }}"
-                data-fila="{{ fila }}"
-                data-columna="{{ columna }}"
-                style="width: {{ 100 / limite.columnas }}%">
-                <span class="codigo">{{ codigo }}</span>
-            </li>
-        {% endfor %}
+        <li class="ui-state-default {{ bloque.estado }}"
+            data-planta="{{ bloque.planta }}"
+            data-codigo="{{ bloque.codigo }}"
+            data-fila="{{ bloque.fila }}"
+            data-columna="{{ bloque.columna }}"
+            style="width: {{ 100 / limite.columnas }}%">
+            <span class="tipo">{{ bloque.tipo }}</span>
+            <a href="{{ bloque.enlace }}"><span class="codigo">{{ bloque.codigo }}</span></a>
+        </li>
+
 
     {% endfor %}
 

@@ -23,25 +23,29 @@ class EmpleadoController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $request= $this->getRequest();
-
-        $entities = $em->getRepository('UpaoFundoBundle:Empleado')
-            ->createQueryBuilder('e')
-            ->orderBy('e.nombre', 'ASC')
-            ->getQuery()
-            ->getResult();
+        $request = $this->getRequest();
 
 
         $data = array();
 
         if ($request->isXmlHttpRequest()) {
 
+            $entities = $em->getRepository('UpaoFundoBundle:Empleado')
+                ->createQueryBuilder('e')
+                ->orderBy('e.nombre', 'ASC')
+                ->getQuery()
+                ->getResult();
+
             foreach ($entities as $empleado) {
+
+                $url = $this->generateUrl('empleado_edit', array('id' => $empleado->getId()));
+
+
                 $data['results'][] = array(
                     'nombre' => $empleado->getNombre(),
                     'dni' => $empleado->getDni(),
                     'telefono' => $empleado->getTelefono(),
-                    'id' => $empleado->getId(),
+                    'id' => '<a href="' . $url . '" class="btn btn-modal btn-primary">Editar</a>',
                 );
             }
 
@@ -51,12 +55,11 @@ class EmpleadoController extends Controller
             ));
 
         } else {
-            return $this->render('UpaoFundoBundle:Empleado:index.html.twig', array(
-                'entities' => $entities,
-            ));
+            return $this->render('UpaoFundoBundle:Empleado:index.html.twig');
         }
 
     }
+
     /**
      * Creates a new Empleado entity.
      *
@@ -67,27 +70,61 @@ class EmpleadoController extends Controller
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
+        $session = $request->getSession();
+
+
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
 
-            return $this->redirect($this->generateUrl('empleado_show', array('id' => $entity->getId())));
+            try {
+
+                $em->persist($entity);
+                $em->flush();
+
+                $data = array(
+                    'status' => 200,
+                    'success' => true,
+                    'message' => 'Se registró el empleado correctamente'
+
+                );
+
+            } catch (\Exception $e) {
+                $data = array(
+                    'status' => 500,
+                    'error' => true,
+                    'message' => 'Error interno'
+
+                );
+            }
+
+            if ($request->isXmlHttpRequest()) {
+
+                return new \Symfony\Component\HttpFoundation\Response(json_encode($data), $data['status'], array(
+                    'Content-Type' => 'application/json'
+                ));
+
+            } else {
+                $session->getFlashBag()->add($data['status'] === 200 ? 'ok' : 'error', $data['message']);
+                return $this->redirect($this->generateUrl('empleado'));
+
+            }
+
+
         }
 
         return $this->render('UpaoFundoBundle:Empleado:new.html.twig', array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
     /**
-    * Creates a form to create a Empleado entity.
-    *
-    * @param Empleado $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to create a Empleado entity.
+     *
+     * @param Empleado $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createCreateForm(Empleado $entity)
     {
         $form = $this->createForm(new EmpleadoType(), $entity, array(
@@ -95,7 +132,7 @@ class EmpleadoController extends Controller
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        // $form->add('submit', 'submit', array('label' => 'Create'));
 
         return $form;
     }
@@ -107,11 +144,11 @@ class EmpleadoController extends Controller
     public function newAction()
     {
         $entity = new Empleado();
-        $form   = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($entity);
 
         return $this->render('UpaoFundoBundle:Empleado:new.html.twig', array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
@@ -132,8 +169,8 @@ class EmpleadoController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render('UpaoFundoBundle:Empleado:show.html.twig', array(
-            'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),        ));
+            'entity' => $entity,
+            'delete_form' => $deleteForm->createView(),));
     }
 
     /**
@@ -154,19 +191,19 @@ class EmpleadoController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render('UpaoFundoBundle:Empleado:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
 
     /**
-    * Creates a form to edit a Empleado entity.
-    *
-    * @param Empleado $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to edit a Empleado entity.
+     *
+     * @param Empleado $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createEditForm(Empleado $entity)
     {
         $form = $this->createForm(new EmpleadoType(), $entity, array(
@@ -174,10 +211,11 @@ class EmpleadoController extends Controller
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        //$form->add('submit', 'submit', array('label' => 'Update'));
 
         return $form;
     }
+
     /**
      * Edits an existing Empleado entity.
      *
@@ -196,18 +234,54 @@ class EmpleadoController extends Controller
         $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
 
-        if ($editForm->isValid()) {
-            $em->flush();
 
-            return $this->redirect($this->generateUrl('empleado_edit', array('id' => $id)));
+        $session = $request->getSession();
+
+
+        if ($editForm->isValid()) {
+
+            try {
+
+                $em->flush();
+
+                $data = array(
+                    'status' => 200,
+                    'success' => true,
+                    'message' => 'Se actualizo el empleado correctamente'
+
+                );
+
+            } catch (\Exception $e) {
+                $data = array(
+                    'status' => 500,
+                    'error' => true,
+                    'message' => 'Error interno'
+
+                );
+            }
+
+            if ($request->isXmlHttpRequest()) {
+
+                return new \Symfony\Component\HttpFoundation\Response(json_encode($data), $data['status'], array(
+                    'Content-Type' => 'application/json'
+                ));
+
+            } else {
+                $session->getFlashBag()->add($data['status'] === 200 ? 'ok' : 'error', $data['message']);
+                return $this->redirect($this->generateUrl('empleado'));
+
+            }
+
         }
 
+
         return $this->render('UpaoFundoBundle:Empleado:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
+
     /**
      * Deletes a Empleado entity.
      *
@@ -245,7 +319,6 @@ class EmpleadoController extends Controller
             ->setAction($this->generateUrl('empleado_delete', array('id' => $id)))
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
-        ;
+            ->getForm();
     }
 }

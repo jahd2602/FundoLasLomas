@@ -12,9 +12,25 @@ namespace Upao\FundoBundle\Util;
 
 class Util
 {
+    static function aasort(&$array, $key)
+    {
+        $sorter = array();
+        $ret = array();
+        reset($array);
+        foreach ($array as $ii => $va) {
+            $sorter[$ii] = $va[$key];
+        }
+        asort($sorter);
+        foreach ($sorter as $ii => $va) {
+            $ret[$ii] = $array[$ii];
+        }
+        $array = $ret;
+    }
+
 
     static function toAlpha($data)
     {
+
         $alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
         $alpha_flip = array_flip($alphabet);
         if ($data <= 25) {

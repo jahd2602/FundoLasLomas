@@ -8,7 +8,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class EstadoAmbienteType extends AbstractType
 {
-        /**
+    /**
      * @param FormBuilderInterface $builder
      * @param array $options
      */
@@ -20,9 +20,9 @@ class EstadoAmbienteType extends AbstractType
             ->add('humedad')
             ->add('presionAmbiental')
             ->add('observaciones')
-        ;
+;
     }
-    
+
     /**
      * @param OptionsResolverInterface $resolver
      */
