@@ -86,6 +86,17 @@ class RegistrarSiembraType extends AbstractType
             'required' => true,
         ));
 
+        $builder->add('cantidadAbono', 'text', array(
+            'label' => 'Cantidad de Abono',
+            'label_attr' => array(
+                'class' => 'control-label'
+            ),
+            'attr' => array( //'location' => true
+            ),
+            'required' => true,
+        ));
+
+
 
         $builder->add('fecha', 'text', array(
             'label' => 'Fecha',

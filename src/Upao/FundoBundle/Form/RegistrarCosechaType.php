@@ -39,8 +39,8 @@ class RegistrarCosechaType extends AbstractType
         ));
 
 
-        $builder->add('total_kilos', 'text', array(
-            'label' => 'Total de Kilos',
+        $builder->add('kilos_primera', 'text', array(
+            'label' => 'Kilos de Primera',
             'label_attr' => array(
                 'class' => 'control-label'
             ),
@@ -49,8 +49,8 @@ class RegistrarCosechaType extends AbstractType
             'required' => true,
         ));
 
-        $builder->add('kilos_disponibles', 'text', array(
-            'label' => 'Kilos Disponibles',
+        $builder->add('kilos_segunda', 'text', array(
+            'label' => 'Kilos de Segunda',
             'label_attr' => array(
                 'class' => 'control-label'
             ),
@@ -58,6 +58,17 @@ class RegistrarCosechaType extends AbstractType
             ),
             'required' => true,
         ));
+
+        $builder->add('kilos_descarte', 'text', array(
+            'label' => 'Kilos de Descarte',
+            'label_attr' => array(
+                'class' => 'control-label'
+            ),
+            'attr' => array( //'location' => true
+            ),
+            'required' => true,
+        ));
+
 
 
         $builder->add('observaciones', 'textarea', array(

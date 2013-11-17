@@ -60,12 +60,44 @@ class PlantaController extends Controller
 
 
                 $valores = explode(',', $rango);
+
+
                 $celdas = array();
-                foreach ($valores as $valor) {
-                    $celdas[] = array(
-                        'columna' => isset($valor[0]) ? Util::toNumber(strtolower($valor[0])) : 0,
-                        'fila' => isset($valor[1]) ? $valor[1] : 0,
-                    );
+                if (!empty($rango)) {
+                    foreach ($valores as $valor) {
+                        $columna = preg_replace('/[^A-Z]/', '', $valor);
+                        $fila = preg_replace('/[^0-9]/', '', $valor);
+
+                        $celdas[] = array(
+                            'columna' => isset($columna) ? Util::toNumber(strtolower($columna)) : 0,
+                            'fila' => isset($fila) ? $fila : 0,
+                        );
+                    }
+                } else {
+                    $cantidadHectareas = floatval($this->container->getParameter('cantidad_hectareas')) * 10000;
+                    $tipoSiembra = $this->container->getParameter('tipo_siembra');
+
+                    $tipoSiembraArray = explode('x', $tipoSiembra);
+                    $tipoSiembraX = isset($tipoSiembraArray[0]) ? $tipoSiembraArray[0] : 1;
+                    $tipoSiembraY = isset($tipoSiembraArray[1]) ? $tipoSiembraArray[1] : 1;
+
+                    $espacioPlanta = $tipoSiembraX * $tipoSiembraY;
+                    $cantidadPlantas = floor($cantidadHectareas / $espacioPlanta);
+
+                    $filas = $espacioPlanta;
+                    $columnas = floor($cantidadPlantas / $filas);
+
+                    for ($i = 1; $i <= $filas; $i++) {
+
+                        for ($j = 1; $j <= $columnas; $j++) {
+                            $celdas[] = array(
+                                'columna' => $j,
+                                'fila' => $i,
+                            );
+                        }
+                    }
+
+
                 }
 
 
@@ -77,6 +109,7 @@ class PlantaController extends Controller
                     $pedido->setCosto($costo);
                     $pedido->setFecha(new \DateTime($data['fecha']));
                     $pedido->setIdProveedor($data['idProveedor']);
+                    $pedido->setCantidadAbono($data['cantidadAbono']);
 
                     $em->persist($pedido);
 
@@ -181,6 +214,14 @@ class PlantaController extends Controller
                 $data = $form->getData();
                 $plantas = $data['plantas'];
 
+                if(count($plantas)<1){
+                    $plantas = $em->getRepository('UpaoFundoBundle:Planta')
+                        ->findBy(
+                            array(
+                                'estado' => 'SEMBRADA',
+                            ));
+                }
+
 
                 $em->getConnection()->beginTransaction();
 
@@ -267,6 +308,14 @@ class PlantaController extends Controller
                 $data = $form->getData();
                 $plantas = $data['plantas'];
 
+                if(count($plantas)<1){
+                    $plantas = $em->getRepository('UpaoFundoBundle:Planta')
+                        ->findBy(
+                            array(
+                                'estado' => 'SEMBRADA',
+                            ));
+                }
+
 
                 $em->getConnection()->beginTransaction();
 
@@ -279,6 +328,7 @@ class PlantaController extends Controller
                     $abono->setObservacion($data['observacion']);
 
                     $em->persist($abono);
+
 
                     foreach ($plantas as $planta) {
 
@@ -364,6 +414,13 @@ class PlantaController extends Controller
                 $data = $form->getData();
                 $plantas = $data['plantas'];
 
+                if(count($plantas)<1){
+                    $plantas = $em->getRepository('UpaoFundoBundle:Planta')
+                        ->findBy(
+                            array(
+                                'estado' => 'SEMBRADA',
+                            ));
+                }
 
                 $em->getConnection()->beginTransaction();
 
@@ -462,14 +519,23 @@ class PlantaController extends Controller
                 $plantas = $data['plantas'];
 
 
+                if(count($plantas)<1){
+                    $plantas = $em->getRepository('UpaoFundoBundle:Planta')
+                        ->findBy(
+                            array(
+                                'estado' => 'SEMBRADA',
+                            ));
+                }
+
                 $em->getConnection()->beginTransaction();
 
                 try {
 
                     $cosecha = new Cosecha();
-                    $cosecha->setKilosDisponibles($data['kilos_disponibles']);
+                    $cosecha->setKilosPrimera($data['kilos_primera']);
+                    $cosecha->setKilosSegunda($data['kilos_segunda']);
+                    $cosecha->setKilosDescarte($data['kilos_descarte']);
                     $cosecha->setFecha(new \DateTime($data['fecha']));
-                    $cosecha->setTotalKilos($data['total_kilos']);
                     $cosecha->setObservaciones($data['observaciones']);
 
                     $em->persist($cosecha);
@@ -558,6 +624,13 @@ class PlantaController extends Controller
                 $data = $form->getData();
                 $plantas = $data['plantas'];
 
+                if(count($plantas)<1){
+                    $plantas = $em->getRepository('UpaoFundoBundle:Planta')
+                        ->findBy(
+                            array(
+                                'estado' => 'SEMBRADA',
+                            ));
+                }
 
                 $em->getConnection()->beginTransaction();
 
@@ -653,7 +726,14 @@ class PlantaController extends Controller
 
                 $data = $form->getData();
                 $plantas = $data['plantas'];
-
+               
+                if(count($plantas)<1){
+                    $plantas = $em->getRepository('UpaoFundoBundle:Planta')
+                        ->findBy(
+                            array(
+                                'estado' => 'SEMBRADA',
+                            ));
+                }
 
                 $em->getConnection()->beginTransaction();
 

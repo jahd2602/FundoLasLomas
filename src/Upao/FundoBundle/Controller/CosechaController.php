@@ -40,11 +40,12 @@ class CosechaController extends Controller
             foreach ($entities as $cosecha) {
                 $url = $this->generateUrl('cosecha_show', array('id' => $cosecha->getId()));
 
-
                 $data['results'][] = array(
+
                     'fecha' => $cosecha->getFecha()->format('Y-m-d'),
-                    'total_kilos' => $cosecha->getTotalKilos() .' Kg.',
-                    'kilos_disponibles' => $cosecha->getKilosDisponibles().' Kg.',
+                    'kilos_primera' => $cosecha->getKilosPrimera() .' Kg.',
+                    'kilos_segunda' => $cosecha->getKilosSegunda() .' Kg.',
+                    'kilos_descarte' => $cosecha->getKilosDescarte() .' Kg.',
                     'observaciones' => Util::truncate($cosecha->getObservaciones(), 50),
                     'id' => '<a href="'.$url.'" class="btn btn-info">Detalle</a>',
                 );

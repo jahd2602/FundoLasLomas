@@ -47,6 +47,7 @@ class VentaController extends Controller
                 $data['results'][] = array(
                     'cosecha' => $venta->getIdCosecha()->getFecha()->format('Y-m-d'),
                     'cliente' => $venta->getIdCliente()->getNombre(),
+                    'tipo' => $venta->getTipo(),
                     'kilos_vendidos' => $venta->getKilosVendidos(). ' Kg.',
                     'costo' =>'S/.'. $venta->getCosto(),
                     'observaciones' => Util::truncate($venta->getObservaciones(),50),

@@ -20,6 +20,13 @@ class Pedido
     private $costo;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="cantidad_abono", type="float", nullable=false)
+     */
+    private $cantidadAbono;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="fecha", type="datetime", nullable=true)
@@ -52,6 +59,30 @@ class Pedido
     public function __toString()
     {
         return $this->getFecha()->format('Y-m-d');
+    }
+
+
+    /**
+     * Set cantidadAbono
+     *
+     * @param float $cantidadAbono
+     * @return Pedido
+     */
+    public function setCantidadAbono($cantidadAbono)
+    {
+        $this->cantidadAbono = $cantidadAbono;
+
+        return $this;
+    }
+
+    /**
+     * Get cantidadAbono
+     *
+     * @return float
+     */
+    public function getCantidadAbono()
+    {
+        return $this->cantidadAbono;
     }
 
 

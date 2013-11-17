@@ -14,5 +14,6 @@ parameters:
     locale:            en
     secret:            ThisTokenIsNotSoSecretChangeIt
 
-    limite_filas: 6
-    limite_columnas: 12
+    cantidad_hectareas: 0.05
+    tipo_siembra: 3x3
+

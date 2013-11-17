@@ -36,6 +36,20 @@ class VentaType extends AbstractType
                 'multiple' => false,
                 'required' => true,
             ))
+            ->add('tipo', 'choice', array(
+                 'label' => 'Tipo de Producto',
+                 'label_attr' => array(
+                     'class' => 'control-label'
+                 ),
+                 'empty_value' => 'Seleccione',
+                 'choices' => array(
+                     'PRIMERA' => 'Primera Calidad',
+                     'SEGUNDA' => 'Segunda Calidad',
+                     'DESCARTE' => 'Descarte',
+                 ),
+                 'required' => true,
+                 'multiple' => false,
+             ))
             ->add('kilosVendidos')
             ->add('observaciones')
             ->add('costo');

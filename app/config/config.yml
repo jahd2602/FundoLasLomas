@@ -32,9 +32,6 @@ twig:
         resources:
             - 'UpaoFundoBundle:Form:fields.html.twig'
     globals:
-      limite:
-        filas: %limite_filas%
-        columnas: %limite_columnas%
 
 # Assetic Configuration
 assetic:

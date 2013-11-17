@@ -2,7 +2,8 @@
 
 {% block body -%}
 
-    <h3>Ventas</h3>
+    <h3>Ventas <a class="btn btn-primary btn-modal" href="{{ path('venta_new') }}">Nueva</a></h3>
+
     <div class="tab-pane" id="datatable">
         <section class="panel">
             <div class="table-responsive">
@@ -10,7 +11,8 @@
                     <thead>
                     <tr>
                         <th data-property="cosecha" width="10%">Cosecha</th>
-                        <th data-property="cliente" width="20%">Cliente</th>
+                        <th data-property="cliente" width="15%">Cliente</th>
+                        <th data-property="tipo" width="5%">Tipo</th>
                         <th data-property="kilos_vendidos" width="10%">Kg. Vendidos</th>
                         <th data-property="costo" width="10%">Costo</th>
                         <th data-property="observaciones" width="30%">Observaciones</th>
@@ -26,7 +28,6 @@
         </section>
     </div>
 
-    <a class="btn btn-primary btn-modal" href="{{ path('venta_new') }}">Nuevo</a>
 
 {% endblock %}
 {% block javascript %}
@@ -44,6 +45,7 @@
                     "aoColumns": [
                         {"mData": "cosecha"},
                         {"mData": "cliente"},
+                        {"mData": "tipo"},
                         {"mData": "kilos_vendidos"},
                         {"mData": "costo"},
                         {"mData": "observaciones"},

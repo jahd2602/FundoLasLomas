@@ -1,53 +1,31 @@
-{% extends app.request.xmlHttpRequest ? "UpaoFundoBundle:Layout:modal.html.twig" :  "UpaoFundoBundle:Layout:base.html.twig" %}
+{% extends '::base.html.twig' %}
 
-{% block body %}
+{% block body -%}
+    <h3>Pedido</h3>
 
+    <table class="record_properties table-striped">
+        <tbody>
+        <tr>
+            <th>Costo:</th>
+            <td>{{ entity.costo }}</td>
+        </tr>
+        <tr>
+            <th>Cantidad de Abono:</th>
+            <td>{{ entity.cantidadAbono }} Kg.</td>
+        </tr>
+        <tr>
+            <th>Fecha</th>
+            <td>{{ entity.fecha|date('Y-m-d H:i') }}</td>
+        </tr>
+        </tbody>
+    </table>
 
-
-        <div class="modal-header">
-            <h4 class="modal-title">{% block title %}Pedido{% endblock %}</h4>
-        </div>
-
-        <div class="modal-body">
-
-
-            {% block content %}
-
-
-                <table class="record_properties table-striped">
-                    <tbody>
-                    <tr>
-                        <th>Costo:</th>
-                        <td>{{ entity.costo }}</td>
-                    </tr>
-                    <tr>
-                        <th>Fecha</th>
-                        <td>{{ entity.fecha|date('Y-m-d H:i') }}</td>
-                    </tr>
-                    </tbody>
-                </table>
-            {% endblock %}
+    <a class="btn btn-primary" href="{{ path('pedido') }}">
+        Regresar a la lista
+    </a>
+    <div class="clearfix"></div>
 
 
-        </div>
-
-        <div class="modal-footer">
-
-
-            <a href="{{ path('pedido') }}" class="btn btn-primary">Regresar a la Lista</a>
-        </div>
+    {{ render(controller('UpaoFundoBundle:Fundo:muestra', { 'plantas': plantas })) }}
 
 {% endblock %}
-
-
-{% block javascript %}
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-
-        });
-    </script>
-
-
-{% endblock %}
-

@@ -15,7 +15,9 @@ class CosechaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('totalKilos')
+            ->add('kilosPrimera')
+            ->add('kilosSegunda')
+            ->add('kilosDescarte')
             ->add('kilosDisponibles')
             ->add('fecha')
             ->add('observaciones')

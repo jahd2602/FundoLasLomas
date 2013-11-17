@@ -14,8 +14,21 @@ class FundoController extends Controller
 
     public function regionAction()
     {
-        $filas = $this->container->getParameter('limite_filas');
-        $columnas = $this->container->getParameter('limite_columnas');
+        $cantidadHectareas = floatval($this->container->getParameter('cantidad_hectareas')) * 10000;
+        $tipoSiembra = $this->container->getParameter('tipo_siembra');
+
+        $tipoSiembraArray = explode('x', $tipoSiembra);
+        $tipoSiembraX = isset($tipoSiembraArray[0]) ? $tipoSiembraArray[0] : 1;
+        $tipoSiembraY = isset($tipoSiembraArray[1]) ? $tipoSiembraArray[1] : 1;
+
+        $espacioPlanta = $tipoSiembraX * $tipoSiembraY;
+        $cantidadPlantas = floor($cantidadHectareas / $espacioPlanta);
+
+        $filas = $espacioPlanta;
+        $columnas = floor($cantidadPlantas / $filas);
+
+        $ancho = ($columnas+1) * 40;
+
         $em = $this->getDoctrine()->getManager();
 
         $plantas = $em->getRepository('UpaoFundoBundle:Planta')
@@ -94,14 +107,26 @@ class FundoController extends Controller
 
         return $this->render('UpaoFundoBundle:Fundo:region.html.twig', array(
             'bloques' => $bloques,
+            'ancho' => $ancho,
         ));
     }
 
     public function muestraAction($plantas)
     {
+        $cantidadHectareas = floatval($this->container->getParameter('cantidad_hectareas')) * 10000;
+        $tipoSiembra = $this->container->getParameter('tipo_siembra');
 
-        $filas = $this->container->getParameter('limite_filas');
-        $columnas = $this->container->getParameter('limite_columnas');
+        $tipoSiembraArray = explode('x', $tipoSiembra);
+        $tipoSiembraX = isset($tipoSiembraArray[0]) ? $tipoSiembraArray[0] : 1;
+        $tipoSiembraY = isset($tipoSiembraArray[1]) ? $tipoSiembraArray[1] : 1;
+
+        $espacioPlanta = $tipoSiembraX * $tipoSiembraY;
+        $cantidadPlantas = floor($cantidadHectareas / $espacioPlanta);
+
+        $filas = $espacioPlanta;
+        $columnas = floor($cantidadPlantas / $filas);
+
+        $ancho = ($columnas+1) * 40;
 
         $bloques = array();
 
@@ -157,6 +182,7 @@ class FundoController extends Controller
 
         return $this->render('UpaoFundoBundle:Fundo:muestra.html.twig', array(
             'bloques' => $bloques,
+            'ancho' => $ancho,
         ));
     }
 }

@@ -50,7 +50,7 @@ class LoadRiegoData extends AbstractFixture implements OrderedFixtureInterface, 
         $fecha->setTimestamp(strtotime('01/01/2013'));
 
 
-        for ($i = 0, $total = mt_rand(100,200); $i < $total; $i++) {
+        for ($i = 0, $total = mt_rand(10,20); $i < $total; $i++) {
 
             $riego = new Riego();
             $riego->setFecha(clone $fecha);
@@ -61,7 +61,7 @@ class LoadRiegoData extends AbstractFixture implements OrderedFixtureInterface, 
             $fecha->add(new \DateInterval('P1D'));
 
 
-            for ($j = 0, $totalRiego = mt_rand(40,50); $j < $totalRiego; $j++) {
+            for ($j = 0, $totalRiego = mt_rand(10,20); $j < $totalRiego; $j++) {
 
                 $riegoPlanta = new RiegoPlanta();
                 $riegoPlanta->setIdRiego($riego);

@@ -2,7 +2,7 @@
 
 {% block body -%}
 
-    <h3>Clientes</h3>
+    <h3>Clientes <a class="btn btn-primary btn-modal" href="{{ path('cliente_new') }}">Nuevo</a></h3>
     <div class="tab-pane" id="datatable">
         <section class="panel">
             <div class="table-responsive">
@@ -24,7 +24,7 @@
         </section>
     </div>
 
-    <a class="btn btn-primary btn-modal" href="{{ path('cliente_new') }}">Nuevo</a>
+
 
 
 {% endblock %}

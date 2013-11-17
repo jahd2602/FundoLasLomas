@@ -13,6 +13,13 @@ use Doctrine\ORM\Mapping as ORM;
 class Venta
 {
     /**
+     * @var string
+     *
+     * @ORM\Column(name="tipo", type="string", nullable=true)
+     */
+    private $tipo;
+
+    /**
      * @var float
      *
      * @ORM\Column(name="kilos_vendidos", type="float", nullable=true)
@@ -63,6 +70,29 @@ class Venta
     private $idCliente;
 
 
+
+    /**
+     * Set tipo
+     *
+     * @param string $tipo
+     * @return Venta
+     */
+    public function setTipo($tipo)
+    {
+        $this->tipo = $tipo;
+
+        return $this;
+    }
+
+    /**
+     * Get tipo
+     *
+     * @return string
+     */
+    public function getTipo()
+    {
+        return $this->tipo;
+    }
 
     /**
      * Set kilosVendidos

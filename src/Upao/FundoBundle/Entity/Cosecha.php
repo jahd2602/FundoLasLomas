@@ -15,16 +15,23 @@ class Cosecha
     /**
      * @var float
      *
-     * @ORM\Column(name="total_kilos", type="float", nullable=false)
+     * @ORM\Column(name="kilos_primera", type="float", nullable=false)
      */
-    private $totalKilos;
+    private $kilosPrimera;
 
     /**
      * @var float
      *
-     * @ORM\Column(name="kilos_disponibles", type="float", nullable=false)
+     * @ORM\Column(name="kilos_segunda", type="float", nullable=false)
      */
-    private $kilosDisponibles;
+    private $kilosSegunda;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="kilos_descarte", type="float", nullable=false)
+     */
+    private $kilosDescarte;
 
     /**
      * @var \DateTime
@@ -57,49 +64,73 @@ class Cosecha
     }
 
     /**
-     * Set totalKilos
+     * Set kilosPrimera
      *
-     * @param float $totalKilos
+     * @param float $kilosPrimera
      * @return Cosecha
      */
-    public function setTotalKilos($totalKilos)
+    public function setKilosPrimera($kilosPrimera)
     {
-        $this->totalKilos = $totalKilos;
+        $this->kilosPrimera = $kilosPrimera;
     
         return $this;
     }
 
     /**
-     * Get totalKilos
+     * Get kilosPrimera
      *
      * @return float 
      */
-    public function getTotalKilos()
+    public function getKilosPrimera()
     {
-        return $this->totalKilos;
+        return $this->kilosPrimera;
     }
 
     /**
-     * Set kilosDisponibles
+     * Set kilosSegunda
      *
-     * @param float $kilosDisponibles
+     * @param float $kilosSegunda
      * @return Cosecha
      */
-    public function setKilosDisponibles($kilosDisponibles)
+    public function setKilosSegunda($kilosSegunda)
     {
-        $this->kilosDisponibles = $kilosDisponibles;
-    
+        $this->kilosSegunda = $kilosSegunda;
+
         return $this;
     }
 
     /**
-     * Get kilosDisponibles
+     * Get kilosSegunda
      *
-     * @return float 
+     * @return float
      */
-    public function getKilosDisponibles()
+    public function getKilosSegunda()
     {
-        return $this->kilosDisponibles;
+        return $this->kilosSegunda;
+    }
+
+
+    /**
+     * Set kilosDescarte
+     *
+     * @param float $kilosDescarte
+     * @return Cosecha
+     */
+    public function setKilosDescarte($kilosDescarte)
+    {
+        $this->kilosDescarte = $kilosDescarte;
+
+        return $this;
+    }
+
+    /**
+     * Get kilosDescarte
+     *
+     * @return float
+     */
+    public function getKilosDescarte()
+    {
+        return $this->kilosDescarte;
     }
 
     /**

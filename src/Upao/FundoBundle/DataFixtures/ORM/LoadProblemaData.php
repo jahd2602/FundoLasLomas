@@ -50,7 +50,7 @@ class LoadProblemaData extends AbstractFixture implements OrderedFixtureInterfac
         $fecha = new \DateTime();
         $fecha->setTimestamp(strtotime('01/01/2013'));
 
-        for ($i = 0, $total = mt_rand(100,200); $i < $total; $i++) {
+        for ($i = 0, $total = mt_rand(10,20); $i < $total; $i++) {
 
             $problema = new Problema();
             $problema->setFecha(clone $fecha);

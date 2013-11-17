@@ -73,6 +73,7 @@ class LoadProveedorData extends AbstractFixture implements OrderedFixtureInterfa
                 $pedido = new Pedido();
                 $pedido->setFecha(clone $fecha);
                 $pedido->setCosto(mt_rand(500, 5000));
+                $pedido->setCantidadAbono(mt_rand(500, 5000));
                 $pedido->setIdProveedor($proveedor);
 
                 $manager->persist($pedido);

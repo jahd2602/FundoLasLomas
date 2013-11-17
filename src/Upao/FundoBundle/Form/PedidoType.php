@@ -17,6 +17,7 @@ class PedidoType extends AbstractType
         $builder
             ->add('costo')
             ->add('fecha')
+            ->add('cantidadAbono')
             ->add('idProveedor')
         ;
     }

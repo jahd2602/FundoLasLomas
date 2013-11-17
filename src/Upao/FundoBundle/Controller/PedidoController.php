@@ -23,7 +23,7 @@ class PedidoController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $request= $this->getRequest();
+        $request = $this->getRequest();
 
         $data = array();
 
@@ -43,8 +43,9 @@ class PedidoController extends Controller
                 $data['results'][] = array(
                     'fecha' => $pedido->getFecha() ? $pedido->getFecha()->format('Y-m-d') : '',
                     'proveedor' => $pedido->getIdProveedor()->getNombre(),
-                    'costo' => 'S/.'.$pedido->getCosto(),
-                    'id' => '<a href="'.$url.'" class="btn btn-modal btn-info">Detalle</a>',
+                    'costo' => 'S/.' . $pedido->getCosto(),
+                    'cantidad_abono' => $pedido->getCantidadAbono() . ' Kg.',
+                    'id' => '<a href="' . $url . '" class="btn btn-info">Detalle</a>',
                 );
             }
 
@@ -58,6 +59,7 @@ class PedidoController extends Controller
         }
 
     }
+
     /**
      * Creates a new Pedido entity.
      *
@@ -78,17 +80,17 @@ class PedidoController extends Controller
 
         return $this->render('UpaoFundoBundle:Pedido:new.html.twig', array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
     /**
-    * Creates a form to create a Pedido entity.
-    *
-    * @param Pedido $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to create a Pedido entity.
+     *
+     * @param Pedido $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createCreateForm(Pedido $entity)
     {
         $form = $this->createForm(new PedidoType(), $entity, array(
@@ -108,11 +110,11 @@ class PedidoController extends Controller
     public function newAction()
     {
         $entity = new Pedido();
-        $form   = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($entity);
 
         return $this->render('UpaoFundoBundle:Pedido:new.html.twig', array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
@@ -130,11 +132,19 @@ class PedidoController extends Controller
             throw $this->createNotFoundException('Unable to find Pedido entity.');
         }
 
+        $plantas = $em->getRepository('UpaoFundoBundle:Planta')
+            ->findBy(
+                array(
+                    'idPedido' => $entity->getId(),
+                ));
+
+
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render('UpaoFundoBundle:Pedido:show.html.twig', array(
-            'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),        ));
+            'entity' => $entity,
+            'plantas' => $plantas,
+            'delete_form' => $deleteForm->createView(),));
     }
 
     /**
@@ -155,19 +165,19 @@ class PedidoController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render('UpaoFundoBundle:Pedido:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
 
     /**
-    * Creates a form to edit a Pedido entity.
-    *
-    * @param Pedido $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to edit a Pedido entity.
+     *
+     * @param Pedido $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createEditForm(Pedido $entity)
     {
         $form = $this->createForm(new PedidoType(), $entity, array(
@@ -179,6 +189,7 @@ class PedidoController extends Controller
 
         return $form;
     }
+
     /**
      * Edits an existing Pedido entity.
      *
@@ -204,11 +215,12 @@ class PedidoController extends Controller
         }
 
         return $this->render('UpaoFundoBundle:Pedido:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
+
     /**
      * Deletes a Pedido entity.
      *
@@ -246,7 +258,6 @@ class PedidoController extends Controller
             ->setAction($this->generateUrl('pedido_delete', array('id' => $id)))
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
-        ;
+            ->getForm();
     }
 }

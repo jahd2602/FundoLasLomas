@@ -52,8 +52,9 @@ class LoadCosechaData extends AbstractFixture implements OrderedFixtureInterface
         for ($i = 0, $total = mt_rand(10, 20); $i < $total; $i++) {
 
             $cosecha = new Cosecha();
-            $cosecha->setKilosDisponibles(mt_rand(100, 5000));
-            $cosecha->setTotalKilos(mt_rand(100, 5000));
+            $cosecha->setKilosPrimera(mt_rand(100, 5000));
+            $cosecha->setKilosSegunda(mt_rand(100, 5000));
+            $cosecha->setKilosDescarte(mt_rand(100, 5000));
             $cosecha->setFecha(clone $fecha);
             $cosecha->setObservaciones($lorem->paragraph(mt_rand(0, 2)));
 

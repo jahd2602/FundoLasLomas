@@ -25,6 +25,8 @@
         <div class="modal-footer">
 
             {% block buttons %}
+                <a class="btn btn-default btn-modal" rel="modal:close" href="{{ path('tipoplanta_new') }}">Nueva Planta</a>
+                <a class="btn btn-default btn-modal" rel="modal:close" href="{{ path('proveedor_new') }}">Nuevo Proveedor</a>
                 <button type="submit" class="btn btn-primary">Registrar Siembra</button>
             {% endblock %}
         </div>

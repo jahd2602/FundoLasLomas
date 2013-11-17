@@ -29,13 +29,13 @@
             zIndex:         9999,           // Overlay z-index: Number or auto.
             overlay:        true,           // Show the overlay.
             overlayColor:   '#000',         // Overlay color.
-            overlayOpacity: 0.8,            // The overlay opacity level. Range: 0 to 1.
+            overlayOpacity: 0.3,            // The overlay opacity level. Range: 0 to 1.
             overlayClose:   true,           // Allows the user to close the modal by clicking the overlay.
             overlaySpeed:   200,            // Sets the speed of the overlay, in milliseconds.
             customClass:    null,           // Custom class to modal.
             width:          null,           // Set a fixed total width.
             height:         null,           // Set a fixed total height.
-            effect:         'sign',       // fadein | slide | newspaper | fall | sidefall | blur | flip | sign | superscaled | slit | rotate | letmein | makeway | slip | blur.
+            effect:         'fadein',       // fadein | slide | newspaper | fall | sidefall | blur | flip | sign | superscaled | slit | rotate | letmein | makeway | slip | blur.
             position:       null,           // Only with effects: slide, flip and rotate. (top, right, bottom, left and center) | (vertical or horizontal) and output position sseparated by commas. Ex: 'top, bottom'.
             speed:          600,            // Sets the speed of the transitions, in milliseconds.
             open:           null,           // Callback that fires right before begins to open.
@@ -189,7 +189,7 @@
                         }
 
                         var div = document.createElement('div');
-                            div.className = cb + '-container';
+                        div.className = cb + '-container';
 
                         // Move the body's children into this wrapper
                         while ( document.body.firstChild ) {
@@ -261,9 +261,9 @@
 
                     // Check if scrollbar is visible.
                     var wsize = {
-                            width:  'innerWidth' in window ? window.innerWidth : document.documentElement.offsetWidth,
-                            height: 'innerHeight' in window ? window.innerHeight : document.documentElement.offsetHeight
-                        };
+                        width:  'innerWidth' in window ? window.innerWidth : document.documentElement.offsetWidth,
+                        height: 'innerHeight' in window ? window.innerHeight : document.documentElement.offsetHeight
+                    };
 
                     if ( !obj.settings.scrollbar ) {
                         if ( modal.offsetHeight < wsize.height ) {
@@ -548,7 +548,7 @@
             // Check if callback 'close'.
             if ( obj.settings.close && typeof obj.settings.close === 'function' ) {
                 var store =  obj.settings.close;
-                    var modal = ( obj._isIE() ? document.querySelectorAll('.' + cb + '-modal')[0] : document.getElementsByClassName(cb + '-modal')[0] );
+                var modal = ( obj._isIE() ? document.querySelectorAll('.' + cb + '-modal')[0] : document.getElementsByClassName(cb + '-modal')[0] );
                 modal.setAttribute('data-' + cb, store);
             }
         },
